@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html>
+<script>
+
+// =======================
+// 00:00 EVENT
+// =======================
+
+let hour = new Date().getHours();
+
+if(hour === 0){
+  document.body.innerHTML = `
+    <div style="
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+      font-size:100px;
+      color:red;
+      background:black;
+    ">
+      514
+    </div>
+  `;
+}
+
+// =======================
+// SECRET EVENT
+// =======================
+
+function secretEvent(){
+
+  let overlay = document.createElement("div");
+  overlay.style.position = "fixed";
+  overlay.style.top = "0";
+  overlay.style.left = "0";
+  overlay.style.width = "100%";
+  overlay.style.height = "100%";
+  overlay.style.background = "black";
+  overlay.style.display = "flex";
+  overlay.style.justifyContent = "center";
+  overlay.style.alignItems = "center";
+  overlay.style.zIndex = "9999";
+
+  overlay.innerHTML = `
+    <div style="color:red; font-size:120px;">514</div>
+    <div style="
+      position:absolute;
+      bottom:15px;
+      right:20px;
+      color:red;
+      font-size:16px;
+    ">
+      :)
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  setTimeout(()=>{
+    overlay.remove();
+  }, 20000);
+}
+
+// =======================
+// EMOJI CHECK (SAFE VERSION)
+// =======================
+
+function isOnlyEmoji(str){
+  return /^[\u{1F300}-\u{1FAFF}\s]+$/u.test(str);
+}
+
+// =======================
+// MAIN REPLY
+// =======================
+
+function reply(){
+
+  let input = document.getElementById("msg").value.trim();
+  let chat = document.getElementById("chat");
+
+  if(input === "") return;
+
+  chat.innerHTML += "<p>> " + input + "</p>";
+
+  let lower = input.toLowerCase();
+
+  // 🔥 SECRET KEYWORDS CHECK FIRST
+  if(
+    input === "514" ||
+    lower === "bạn là ai?" ||
+    lower === "bạn là ai" ||
+    input === "あなたは誰ですか？" ||
+    input === "あなたは誰"
+  ){
+    secretEvent();
+  }
+
+  // EMOJI CHECK AFTER
+  else if(isOnlyEmoji(input)){
+    setTimeout(()=>{
+      chat.innerHTML += "<p>Unknown: 可愛いですね？</p>";
+    }, 1200);
+
+    document.getElementById("msg").value = "";
+    return;
+  }
+
+  const replies = [
+    "あなたの願い、ここに残ります。",
+    "代償は既に始まっています。",
+    "誰かが代わりに支払います。",
+    "あなたは選ばれました。",
+    "戻る道はありません。",
+    "514はあなたを拒みません。",
+    "その言葉、取り消せません。",
+    "あなたは監視されています。",
+    "あなたは覚えていますか？",
+    "ここに来たのは初めてではありません。",
+    "その入力は保存されました。",
+    "願いは血を求めます。",
+    "あなたの影が笑っています。",
+    "514は応答しています。",
+    "すでに一つ叶いました。",
+    "あなたはそれに気づいていない。",
+    "この部屋は出口がありません。",
+    "願いはあなたを消耗させます。",
+    "それでも続けますか？",
+    "あなたは見られています。",
+    "次はあなたの番です。",
+    "514はあなたを知っています。",
+    "その願い、前にも聞きました。",
+    "言葉にした瞬間、もう戻れません。",
+    "あなたは何を失う覚悟がありますか？",
+    "ここは学校ではありません。",
+    "願いにも重さがあります。"
+  ];
+
+  setTimeout(()=>{
+    let randomReply = replies[Math.floor(Math.random() * replies.length)];
+    chat.innerHTML += "<p>Unknown: " + randomReply + "</p>";
+  }, 1500);
+
+  document.getElementById("msg").value = "";
+}
+
+</script>
