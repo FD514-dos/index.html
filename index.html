@@ -83,6 +83,14 @@ function checkMidnightMode(){
 checkMidnightMode();
 
 
+// ===== 2AM - 3AM SLEEP MODE (ADDED) =====
+function checkSleepMode(){
+    const now = new Date();
+    const hour = now.getHours();
+    return hour === 2;
+}
+
+
 // ===== FREE BIRD FUNCTION (ADDED) =====
 function isFreeBird(text){
     const t = text.toLowerCase().trim();
@@ -150,6 +158,41 @@ const replies = [
 "Wishes have weight."
 ];
 
+// ===== CLASSROOM 514 KEYWORDS (ADDED) =====
+const classroom514Triggers = [
+"phòng học 514",
+"em bị bắt nạt, đau quá",
+"cứu em với",
+"họ đã nhốt em trong nhà vệ sinh",
+"vì sao nguyện vọng không thành sự thật ?",
+"chết",
+"những cái xác đung đưa",
+"rơi xuống",
+"không có kì tích",
+"bắt nạt",
+"xách vở bị xé nát",
+"ai đó, làm ơn, ai cũng được, cứu với",
+"tội ác",
+"sự trừng phạt"
+];
+
+const classroom514Replies = [
+"I was bullied. It hurts so much.",
+"Help me.",
+"They locked me inside the bathroom.",
+"Why don’t wishes ever come true?",
+"Death.",
+"Swinging corpses.",
+"Falling down.",
+"There are no miracles.",
+"Bullying.",
+"My schoolbag was torn apart.",
+"Someone, please, anyone, save me.",
+"Crime.",
+"Punishment."
+];
+
+
 // ===== MAIN FUNCTION =====
 function reply(){
 
@@ -164,6 +207,33 @@ function reply(){
     }
 
     const lower = inputRaw.toLowerCase();
+
+    // ===== 2AM RANDOM SLEEP (70%) =====
+    if(checkSleepMode()){
+        if(Math.random() < 0.7){
+            responseDiv.innerText = Math.random() < 0.5 ? "go to sleep" : "đi ngủ đi";
+            return;
+        }
+    }
+
+    // ===== CLASSROOM 514 SYSTEM =====
+    for(let trigger of classroom514Triggers){
+        if(lower.includes(trigger)){
+            responseDiv.innerText = classroom514Replies[Math.floor(Math.random()*classroom514Replies.length)];
+            return;
+        }
+    }
+
+    // ===== FYODOR / NIKOLAI EXPRESSIONS =====
+    if(lower.includes("fyodor da")){
+        responseDiv.innerText = ":(";
+        return;
+    }
+
+    if(lower.includes("fyodor ori") || lower.includes("nikolai ori")){
+        responseDiv.innerText = ":)";
+        return;
+    }
 
     // ===== RATS / DEVIL DEAL SYSTEM =====
     if(
@@ -201,7 +271,7 @@ function reply(){
     if(hasDazai){
         const dazaiQuotes = [
         "自分を憐れむのはやめろ。そうしている限り、君の人生は終わりのない悪夢のままだ。",
-      "人生において、成功は失敗よりも難しいものです。そう思いますか？だからこそ、実際に自殺するよりも、自殺を試みるべきです！自殺は難しいですが、自殺を試みて失敗する方が比較的簡単です！" ,
+        "人生において、成功は失敗よりも難しいものです。そう思いますか？だからこそ、実際に自殺するよりも、自殺を試みるべきです！自殺は難しいですが、自殺を試みて失敗する方が比較的簡単です！",
         "僕はいつも失いたくないものを失ってきた。それでも、生きる理由を探し続けるしかない。",
         "死と暴力の近くにいれば人間の本質が見えると思った。そしてそこから生きる理由を見つけられると信じていた。",
         "人間は皆、罪深く愚かだ。だが、それの何が悪い？"
@@ -277,7 +347,7 @@ function reply(){
             body.style.alignItems = "center";
             body.style.height = "100vh";
             body.style.color = "white";
-            body.style.fontSize = "40px";
+            body.style.fontSize = "80px";
             body.innerHTML = ":)";
         },3000);
 
