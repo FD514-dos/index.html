@@ -82,6 +82,18 @@ function checkMidnightMode(){
 checkMidnightMode();
 
 
+// ===== FREE BIRD FUNCTION (ADDED) =====
+function isFreeBird(text){
+    const t = text.toLowerCase().trim();
+
+    return t === "tôi là con chim tự do" ||
+           t === "toi la con chim tu do" ||
+           t === "i am a free bird" ||
+           t === "私は自由な鳥です" ||
+           t === "я свободная птица";
+}
+
+
 // ===== 514 MAIN RESPONSES =====
 const replies = [
 "Your wish will remain here.",
@@ -213,6 +225,26 @@ function reply(){
     if(inputRaw === ""){
         responseDiv.style.color = "white";
         responseDiv.innerText = "……Please enter something.";
+        return;
+    }
+
+    // ===== FREE BIRD ACTIVATION (ADDED) =====
+    if(isFreeBird(inputRaw)){
+        responseDiv.style.color = "white";
+        responseDiv.innerText = "Kolya ?";
+
+        setTimeout(()=>{
+            body.innerHTML = "";
+            body.style.background = "black";
+            body.style.display = "flex";
+            body.style.justifyContent = "center";
+            body.style.alignItems = "center";
+            body.style.height = "100vh";
+            body.style.color = "white";
+            body.style.fontSize = "40px";
+            body.innerHTML = ":)";
+        },3000);
+
         return;
     }
 
