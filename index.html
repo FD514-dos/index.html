@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>514号室</title>
+<title>高等中学 張瑞涵・514号室 意見箱</title>
 
 <style>
 body{
@@ -65,7 +65,7 @@ button{
 <body>
 
 <div class="container">
-    <h1>514号室</h1>
+    <h1>高等中学 張瑞涵・514号室 意見箱</h1>
     <input id="userInput" placeholder="願いを入力してください">
     <button onclick="reply()">送信</button>
     <div id="response"></div>
@@ -131,10 +131,6 @@ const replies = [
 
 ];
 
-function isEmoji(text){
-    return /[\u{1F600}-\u{1F64F}]/u.test(text);
-}
-
 function trigger514(){
     const big = document.getElementById("big514");
     const smile = document.getElementById("cornerSmile");
@@ -154,15 +150,6 @@ function reply(){
 
     if(input === ""){
         responseDiv.innerText = "……入力してください。";
-        return;
-    }
-
-    if(isEmoji(input)){
-        responseDiv.innerText = "可愛いですね？";
-
-        if(["🙂","😃","😊","😄","😆","😁"].includes(input)){
-            trigger514();
-        }
         return;
     }
 
