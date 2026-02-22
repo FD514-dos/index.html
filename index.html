@@ -12,6 +12,7 @@ body{
     color:white;
     font-family: serif;
     text-align:center;
+    transition: background 0.5s;
 }
 
 .container{
@@ -40,25 +41,6 @@ button{
     font-size:18px;
     min-height:40px;
 }
-
-#big514{
-    position:fixed;
-    top:40%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    font-size:120px;
-    color:red;
-    display:none;
-    z-index:999;
-}
-
-#cornerSmile{
-    position:fixed;
-    bottom:10px;
-    right:10px;
-    font-size:40px;
-    display:none;
-}
 </style>
 </head>
 
@@ -70,9 +52,6 @@ button{
     <button onclick="reply()">Submit</button>
     <div id="response"></div>
 </div>
-
-<div id="big514">514</div>
-<div id="cornerSmile">🙂</div>
 
 <script>
 
@@ -86,8 +65,8 @@ const replies = [
 "514 does not reject you.",
 "Those words cannot be taken back.",
 "You are being watched.",
+"Do you remember?",
 "This is not your first time here.",
-"Do you remember? This is not your first time here.",
 "Your input has been saved.",
 "Is that enough as a sacrifice?",
 "Wishes demand blood.",
@@ -152,8 +131,8 @@ const fyodorReplies = [
 
 // ===== NIETZ =====
 const nietzMain = [
-"One once said: The higher a tree grows, the deeper its roots reach into the darkness.",
-"He who fights with monsters should be careful not to become one. When you gaze long into an abyss, the abyss also gazes into you."
+"The higher a tree grows, the deeper its roots reach into the darkness.",
+"He who fights with monsters should beware lest he become a monster. When you gaze long into an abyss, the abyss also gazes into you."
 ];
 
 const nietzExtra = [
@@ -181,27 +160,41 @@ function containsNietz(t){
     return t.includes("nietz");
 }
 
-// ===== MAIN =====
+// ===== MAIN FUNCTION =====
 function reply(){
     const input = document.getElementById("userInput").value.trim();
     const responseDiv = document.getElementById("response");
+    const body = document.body;
 
     if(input === ""){
+        responseDiv.style.color = "white";
         responseDiv.innerText = "……Please enter something.";
         return;
     }
 
-    const t = normalize(input);
+    // ===== SECRET CODE =====
+    if(input === "132012"){
+        responseDiv.innerText = "";
+        body.style.background = "black";
 
+        setTimeout(() => {
+            responseDiv.style.color = "red";
+            responseDiv.innerText = "Thưa cha, cha gọi con ?";
+        }, 1000);
+
+        return;
+    }
+
+    const t = normalize(input);
     const hasFyodor = containsFyodor(t);
     const hasNietz = containsNietz(t);
 
+    responseDiv.style.color = "white";
+
     if(hasFyodor && hasNietz){
-        if(Math.random() < 0.85){
-            responseDiv.innerText = nietzMain[Math.floor(Math.random()*nietzMain.length)];
-        } else {
-            responseDiv.innerText = nietzExtra[Math.floor(Math.random()*nietzExtra.length)];
-        }
+        responseDiv.innerText = Math.random() < 0.85
+            ? nietzMain[Math.floor(Math.random()*nietzMain.length)]
+            : nietzExtra[Math.floor(Math.random()*nietzExtra.length)];
         return;
     }
 
@@ -211,11 +204,9 @@ function reply(){
     }
 
     if(hasNietz){
-        if(Math.random() < 0.85){
-            responseDiv.innerText = nietzMain[Math.floor(Math.random()*nietzMain.length)];
-        } else {
-            responseDiv.innerText = nietzExtra[Math.floor(Math.random()*nietzExtra.length)];
-        }
+        responseDiv.innerText = Math.random() < 0.85
+            ? nietzMain[Math.floor(Math.random()*nietzMain.length)]
+            : nietzExtra[Math.floor(Math.random()*nietzExtra.length)];
         return;
     }
 
