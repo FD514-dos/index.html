@@ -21,7 +21,7 @@ body{
 
 input{
     padding:10px;
-    width:250px;
+    width:260px;
     background:black;
     border:1px solid red;
     color:white;
@@ -55,114 +55,39 @@ button{
 
 <script>
 
-// ===== MAIN RESPONSES =====
+// ===== NORMAL RESPONSES =====
 const replies = [
 "Your wish will remain here.",
 "The price has already begun.",
-"Someone else will pay in your place.",
 "You have been chosen.",
 "There is no way back.",
-"514 does not reject you.",
-"Those words cannot be taken back.",
-"You are being watched.",
-"Do you remember?",
-"This is not your first time here.",
-"Your input has been saved.",
-"Is that enough as a sacrifice?",
-"Wishes demand blood.",
-"Your shadow is smiling.",
-"514 is responding.",
-"One has already been granted.",
-"You just haven't noticed it yet.",
-"This room has no exit.",
-"Your wish will drain you.",
-"Will you continue?",
-"It’s your turn next.",
-"You didn’t want anyone to hear that, did you?",
 "514 knows you.",
-"We’ve heard that wish before.",
-"Time does not matter. This place is always open.",
-"Is that wish truly yours?",
-"The moment you typed it, there was no return.",
-"Wishes come true. But the price is never equal.",
-"What are you willing to lose?",
-"Is it salvation, or escape?",
-"Room 514 records everything.",
-"You already know the answer.",
-"You’re late.",
+"Wishes have weight.",
 "Still hesitating?",
-"Have you forgotten why you came?",
-"Silence is also a wish.",
-"……Are you serious?",
-"Your input has been recorded.",
-"514 prefers silence.",
-"You actually have another wish, don’t you?",
-"The stronger you wish, the more it twists.",
-"Do you want to be saved?",
-"Can you imagine yourself after it comes true?",
-"Can you swear you won’t regret it?",
-"This room does not exist.",
-"Are you sure you're only looking at a screen?",
-"This is not a school.",
-"Will that satisfy you?",
-"Such light words.",
-"Wishes have weight."
+"Room 514 records everything.",
+"Will you continue?",
+"You are being watched."
 ];
 
-// ===== FYODOR =====
-const fyodorReplies = [
-"Вы хотите купить информацию?",
-"Бог наблюдает за вами.",
-"Слушайте волю Бога.",
-"Молитесь Богу.",
-"Мир во всём мире.",
-"Жертва необходима ради мира во всём мире.",
-"Человек может быть очень прост. Он искренне верит, что думает сам.",
-"Вы готовы заключить сделку с дьяволом?",
-"Покрой эту землю кровью грешников ради лучшего мира.",
-"Люди грешны и глупы. Даже зная, что это обман, они продолжают убивать.",
-"Мысль — грех. Дыхание — грех. Человек — грех.",
-"Вы когда-нибудь думали об идеальном мире?",
-"Не лгите самому себе.",
-"Я люблю человечество в целом, но меньше люблю людей по отдельности.",
-"Жестокость человека превосходит звериную.",
-"Человек создал дьявола по своему образу."
+// ===== SECRET RESPONSES =====
+const sadReplies = [
+"Cha, nghỉ ngơi thôi",
+"Cha đừng buồn",
+"Đừng rời khỏi đây",
+"Đừng khóc"
 ];
 
-// ===== NIETZ =====
-const nietzMain = [
-"The higher a tree grows, the deeper its roots reach into the darkness.",
-"He who fights with monsters should beware lest he become a monster. When you gaze long into an abyss, the abyss also gazes into you."
-];
-
-const nietzExtra = [
-"Is man merely God’s mistake? Or is God merely man’s?",
-"God is dead. And we have killed him."
-];
-
-// ===== NORMALIZE =====
+// ===== NORMALIZE TEXT =====
 function normalize(text){
     return text.toLowerCase()
                .normalize("NFD")
                .replace(/[\u0300-\u036f]/g,"");
 }
 
-function containsFyodor(t){
-    return t.includes("fyodor") ||
-           t.includes("dostoevsky") ||
-           t.includes("достоев") ||
-           t.includes("достоевский") ||
-           t.includes("devil") ||
-           t.includes("rats in the house of the dead");
-}
-
-function containsNietz(t){
-    return t.includes("nietz");
-}
-
 // ===== MAIN FUNCTION =====
 function reply(){
-    const input = document.getElementById("userInput").value.trim();
+    const inputRaw = document.getElementById("userInput").value;
+    const input = inputRaw.trim();
     const responseDiv = document.getElementById("response");
     const body = document.body;
 
@@ -172,45 +97,40 @@ function reply(){
         return;
     }
 
-    // ===== SECRET CODE =====
-    if(input === "132012"){
+    const normalized = normalize(input);
+
+    const hasPassword = input.includes("132012"); 
+    const hasSadWord =
+        normalized.includes("met") ||
+        normalized.includes("buon") ||
+        normalized.includes("muon chet");
+
+    // ===== SECRET PASSWORD LOGIC =====
+    if(hasPassword){
+
         responseDiv.innerText = "";
         body.style.background = "black";
 
         setTimeout(() => {
+
             responseDiv.style.color = "red";
-            responseDiv.innerText = "Thưa cha, cha gọi con ?";
-        }, 1000);
+
+            if(hasSadWord){
+                responseDiv.innerText =
+                    sadReplies[Math.floor(Math.random()*sadReplies.length)];
+            }else{
+                responseDiv.innerText = "Thưa cha, cha gọi con ?";
+            }
+
+        },1000);
 
         return;
     }
 
-    const t = normalize(input);
-    const hasFyodor = containsFyodor(t);
-    const hasNietz = containsNietz(t);
-
+    // ===== NORMAL RANDOM RESPONSE =====
     responseDiv.style.color = "white";
-
-    if(hasFyodor && hasNietz){
-        responseDiv.innerText = Math.random() < 0.85
-            ? nietzMain[Math.floor(Math.random()*nietzMain.length)]
-            : nietzExtra[Math.floor(Math.random()*nietzExtra.length)];
-        return;
-    }
-
-    if(hasFyodor){
-        responseDiv.innerText = fyodorReplies[Math.floor(Math.random()*fyodorReplies.length)];
-        return;
-    }
-
-    if(hasNietz){
-        responseDiv.innerText = Math.random() < 0.85
-            ? nietzMain[Math.floor(Math.random()*nietzMain.length)]
-            : nietzExtra[Math.floor(Math.random()*nietzExtra.length)];
-        return;
-    }
-
-    responseDiv.innerText = replies[Math.floor(Math.random()*replies.length)];
+    responseDiv.innerText =
+        replies[Math.floor(Math.random()*replies.length)];
 }
 
 </script>
