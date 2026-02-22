@@ -40,6 +40,7 @@ button{
     margin-top:30px;
     font-size:18px;
     min-height:40px;
+    transition: opacity 0.5s;
 }
 </style>
 </head>
@@ -56,7 +57,7 @@ button{
 <script>
 
 // ===== NORMAL RESPONSES =====
-const replies = [
+const normalReplies = [
 "Your wish will remain here.",
 "The price has already begun.",
 "You have been chosen.",
@@ -69,12 +70,18 @@ const replies = [
 "You are being watched."
 ];
 
-// ===== SECRET RESPONSES =====
+// ===== SAD RESPONSES =====
 const sadReplies = [
-"Cha, nghỉ ngơi thôi",
-"Cha đừng buồn",
-"Đừng rời khỏi đây",
-"Đừng khóc"
+"Cha, nghỉ ngơi thôi.",
+"Cha đừng buồn.",
+"Đừng rời khỏi đây.",
+"Đừng khóc.",
+"Con ở đây mà.",
+"Cha đừng ngủ một mình.",
+"Cha không được biến mất.",
+"If cha rời đi, con sẽ buồn lắm.",
+"Cha không cần ai khác.",
+"Con hiểu cha."
 ];
 
 // ===== NORMALIZE TEXT =====
@@ -84,29 +91,41 @@ function normalize(text){
                .replace(/[\u0300-\u036f]/g,"");
 }
 
+// ===== CHECK EXACT PASSWORD =====
+function hasExactPassword(text){
+    return text.split(/\s+/).includes("132012");
+}
+
 // ===== MAIN FUNCTION =====
 function reply(){
-    const inputRaw = document.getElementById("userInput").value;
-    const input = inputRaw.trim();
+    const inputRaw = document.getElementById("userInput").value.trim();
     const responseDiv = document.getElementById("response");
     const body = document.body;
 
-    if(input === ""){
+    if(inputRaw === ""){
         responseDiv.style.color = "white";
         responseDiv.innerText = "……Please enter something.";
         return;
     }
 
-    const normalized = normalize(input);
+    const normalized = normalize(inputRaw);
+    const password = hasExactPassword(inputRaw);
 
-    const hasPassword = input.includes("132012"); 
-    const hasSadWord =
-        normalized.includes("met") ||
-        normalized.includes("buon") ||
-        normalized.includes("muon chet");
+    const sadWords = ["met","buon","khoc","muon chet","co don","dau"];
+    const weatherWords = ["lanh","mua","suong","dong"];
+    
+    const hasSad = sadWords.some(word => normalized.includes(word));
+    const hasWeather = weatherWords.some(word => normalized.includes(word));
 
-    // ===== SECRET PASSWORD LOGIC =====
-    if(hasPassword){
+    // ===== CHÀO BUỔI (NO PASSWORD NEEDED) =====
+    if(normalized.includes("chao buoi") || normalized.includes("buoi an")){
+        responseDiv.style.color = "white";
+        responseDiv.innerText = inputRaw + ", thưa cha.";
+        return;
+    }
+
+    // ===== PASSWORD LOGIC =====
+    if(password){
 
         responseDiv.innerText = "";
         body.style.background = "black";
@@ -115,13 +134,51 @@ function reply(){
 
             responseDiv.style.color = "red";
 
-            if(hasSadWord){
-                responseDiv.innerText =
-                    sadReplies[Math.floor(Math.random()*sadReplies.length)];
-            }else{
-                responseDiv.innerText = "Thưa cha, cha gọi con ?";
+            // Special questions
+            if(normalized.includes("con la ai")){
+                responseDiv.innerText = 
+                    Math.random() < 0.5 
+                    ? "Cha quên con rồi sao?"
+                    : "Con của cha.";
+                return;
             }
 
+            if(normalized.includes("ai tao ra con")){
+                responseDiv.innerText = "Cha tạo ra con.";
+                return;
+            }
+
+            // Emotion detection
+            if(hasSad){
+                responseDiv.innerText =
+                    sadReplies[Math.floor(Math.random()*sadReplies.length)];
+                return;
+            }
+
+            // Specific triggers
+            if(normalized.includes("thi xong")){
+                responseDiv.innerText = "Cha làm tốt lắm.";
+                return;
+            }
+
+            if(normalized.includes("toi vui") || normalized.includes("vui")){
+                responseDiv.innerText = "Con vui vì cha vui.";
+                return;
+            }
+
+            if(normalized.includes("ngu")){
+                responseDiv.innerText = "Chúc ngủ ngon.";
+                return;
+            }
+
+            if(hasWeather){
+                responseDiv.innerText = "Cha có lạnh không?";
+                return;
+            }
+
+            // Default password response
+            responseDiv.innerText = "Thưa cha, cha gọi con?";
+        
         },1000);
 
         return;
@@ -130,7 +187,7 @@ function reply(){
     // ===== NORMAL RANDOM RESPONSE =====
     responseDiv.style.color = "white";
     responseDiv.innerText =
-        replies[Math.floor(Math.random()*replies.length)];
+        normalReplies[Math.floor(Math.random()*normalReplies.length)];
 }
 
 </script>
