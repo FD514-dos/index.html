@@ -165,6 +165,24 @@ function reply(){
 
     const lower = inputRaw.toLowerCase();
 
+    // ===== RATS / DEVIL DEAL SYSTEM =====
+    if(
+        /rats in the house of the dead/i.test(inputRaw) ||
+        /devil/i.test(inputRaw) ||
+        /дьявол|крысы/i.test(inputRaw) ||
+        /悪魔|ラッツ/i.test(inputRaw) ||
+        /quỷ|chuột/i.test(inputRaw)
+    ){
+        responseDiv.style.color = "white";
+        responseDiv.innerHTML = `
+            <div>bạn muốn mua tình báo về tương lai chứ ?</div>
+            <br>
+            <button onclick="dealYes()">có</button>
+            <button onclick="dealNo()">không</button>
+        `;
+        return;
+    }
+
     // ===== BEAST MODE =====
     const hasBeast = lower.includes("beast");
     const hasDazai = /dazai|osamu/.test(lower);
@@ -268,6 +286,18 @@ function reply(){
 
     responseDiv.innerText =
         replies[Math.floor(Math.random()*replies.length)];
+}
+
+// ===== DEAL BUTTON FUNCTIONS =====
+function dealYes(){
+    const responseDiv = document.getElementById("response");
+    const result = Math.random() < 0.5 ? "yes" : "no";
+    responseDiv.innerHTML = result;
+}
+
+function dealNo(){
+    const responseDiv = document.getElementById("response");
+    responseDiv.innerHTML = "";
 }
 
 </script>
