@@ -1,9 +1,176 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-<title>Test</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>514号室</title>
+
+<style>
+body{
+    margin:0;
+    background:black;
+    color:white;
+    font-family: serif;
+    text-align:center;
+}
+
+.container{
+    margin-top:15vh;
+}
+
+input{
+    padding:10px;
+    width:250px;
+    background:black;
+    border:1px solid red;
+    color:white;
+    font-size:16px;
+}
+
+button{
+    padding:10px 15px;
+    background:red;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+
+#response{
+    margin-top:30px;
+    font-size:18px;
+    min-height:40px;
+}
+
+#big514{
+    position:fixed;
+    top:40%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    font-size:120px;
+    color:red;
+    display:none;
+    z-index:999;
+}
+
+#cornerSmile{
+    position:fixed;
+    bottom:10px;
+    right:10px;
+    font-size:40px;
+    display:none;
+}
+</style>
 </head>
+
 <body>
-<h1>Nếu thấy dòng này thì HTML chạy bình thường</h1>
+
+<div class="container">
+    <h1>514号室</h1>
+    <input id="userInput" placeholder="願いを入力してください">
+    <button onclick="reply()">送信</button>
+    <div id="response"></div>
+</div>
+
+<div id="big514">514</div>
+<div id="cornerSmile">🙂</div>
+
+<script>
+
+const replies = [
+
+"あなたの願い、ここに残ります。",
+"代償は既に始まっています。",
+"誰かが代わりに支払います。",
+"あなたは選ばれました。",
+"戻る道はありません。",
+"514はあなたを拒みません。",
+"その言葉、取り消せません。",
+"あなたは監視されています。",
+"あなたは覚えていますか？",
+"ここに来たのは初めてではありません。",
+"その入力は保存されました。",
+"それは代償として十分ですか？",
+"願いは血を求めます。",
+"あなたの影が笑っています。",
+"514は応答しています。",
+"すでに一つ叶いました。",
+"あなたはそれに気づいていない。",
+"この部屋は出口がありません。",
+"願いはあなたを消耗させます。",
+"それでも続けますか？",
+"次はあなたの番です。",
+"その言葉、誰かに聞かれたくなかったのでは？",
+"514はあなたを知っています。",
+"その願い、前にも聞きました。",
+"時刻は関係ありません。ここは常に開いています。",
+"その願いは、本当にあなたのものですか？",
+"言葉にした瞬間、もう戻れません。",
+"願いは叶います。ただし、代償は等価ではありません。",
+"あなたは何を失う覚悟がありますか？",
+"それは救いですか、それとも逃避ですか？",
+"514号室はすべてを記録しています。",
+"あなたは既に答えを知っているはずです。",
+"遅いですね。",
+"まだ迷っていますか？",
+"ここに来た理由を忘れましたか？",
+"沈黙も一つの願いです。",
+"……本気ですか？",
+"入力は記録されました。",
+"514は沈黙を好みます。",
+"本当は別の願いがあるでしょう？",
+"強く願うほど、歪みます。",
+"あなたは救われたいのですか？",
+"叶った後の自分を想像できますか？",
+"後悔しないと断言できますか？",
+"この部屋は存在しません。",
+"あなたが見ているのは画面だけですか？",
+"ここは学校ではありません。",
+"それで満足できますか？",
+"軽い言葉ですね。",
+"願いにも重さがあります。"
+
+];
+
+function isEmoji(text){
+    return /[\u{1F600}-\u{1F64F}]/u.test(text);
+}
+
+function trigger514(){
+    const big = document.getElementById("big514");
+    const smile = document.getElementById("cornerSmile");
+
+    big.style.display = "block";
+    smile.style.display = "block";
+
+    setTimeout(()=>{
+        big.style.display = "none";
+        smile.style.display = "none";
+    },20000);
+}
+
+function reply(){
+    const input = document.getElementById("userInput").value.trim();
+    const responseDiv = document.getElementById("response");
+
+    if(input === ""){
+        responseDiv.innerText = "……入力してください。";
+        return;
+    }
+
+    if(isEmoji(input)){
+        responseDiv.innerText = "可愛いですね？";
+
+        if(["🙂","😃","😊","😄","😆","😁"].includes(input)){
+            trigger514();
+        }
+        return;
+    }
+
+    const random = replies[Math.floor(Math.random()*replies.length)];
+    responseDiv.innerText = random;
+}
+
+</script>
+
 </body>
 </html>
