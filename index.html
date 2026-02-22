@@ -21,7 +21,7 @@ body{
 
 input{
     padding:10px;
-    width:260px;
+    width:250px;
     background:black;
     border:1px solid red;
     color:white;
@@ -40,7 +40,6 @@ button{
     margin-top:30px;
     font-size:18px;
     min-height:40px;
-    transition: opacity 0.5s;
 }
 </style>
 </head>
@@ -56,21 +55,93 @@ button{
 
 <script>
 
-// ===== NORMAL RESPONSES =====
-const normalReplies = [
+// ===== 514 MAIN RESPONSES =====
+const replies = [
+"Your wish will remain here.",
 "Your wish will remain here.",
 "The price has already begun.",
+"Someone else will pay in your place.",
 "You have been chosen.",
 "There is no way back.",
-"514 knows you.",
-"Wishes have weight.",
-"Still hesitating?",
-"Room 514 records everything.",
+"514 does not reject you.",
+"Those words cannot be taken back.",
+"You are being watched.",
+"Do you remember?",
+"This is not your first time here.",
+"Your input has been saved.",
+"Is that enough as a sacrifice?",
+"Wishes demand blood.",
+"Your shadow is smiling.",
+"514 is responding.",
+"One has already been granted.",
+"You just haven't noticed it yet.",
+"This room has no exit.",
+"Your wish will drain you.",
 "Will you continue?",
-"You are being watched."
+"It’s your turn next.",
+"You didn’t want anyone to hear that, did you?",
+"514 knows you.",
+"We’ve heard that wish before.",
+"Time does not matter. This place is always open.",
+"Is that wish truly yours?",
+"The moment you typed it, there was no return.",
+"Wishes come true. But the price is never equal.",
+"What are you willing to lose?",
+"Is it salvation, or escape?",
+"Room 514 records everything.",
+"You already know the answer.",
+"You’re late.",
+"Still hesitating?",
+"Have you forgotten why you came?",
+"Silence is also a wish.",
+"……Are you serious?",
+"Your input has been recorded.",
+"514 prefers silence.",
+"You actually have another wish, don’t you?",
+"The stronger you wish, the more it twists.",
+"Do you want to be saved?",
+"Can you imagine yourself after it comes true?",
+"Can you swear you won’t regret it?",
+"This room does not exist.",
+"Are you sure you're only looking at a screen?",
+"This is not a school.",
+"Will that satisfy you?",
+"Such light words.",
+"Wishes have weight."
 ];
 
-// ===== SAD RESPONSES =====
+// ===== FYODOR =====
+const fyodorReplies = [
+"Вы хотите купить информацию?",
+"Бог наблюдает за вами.",
+"Слушайте волю Бога.",
+"Молитесь Богу.",
+"Мир во всём мире.",
+"Жертва необходима ради мира во всём мире.",
+"Человек может быть очень прост. Он искренне верит, что думает сам.",
+"Вы готовы заключить сделку с дьяволом?",
+"Покрой эту землю кровью грешников ради лучшего мира.",
+"Люди грешны и глупы. Даже зная, что это обман, они продолжают убивать.",
+"Мысль — грех. Дыхание — грех. Человек — грех.",
+"Вы когда-нибудь думали об идеальном мире?",
+"Не лгите самому себе.",
+"Я люблю человечество в целом, но меньше люблю людей по отдельности.",
+"Жестокость человека превосходит звериную.",
+"Человек создал дьявола по своему образу."
+];
+
+// ===== NIETZ =====
+const nietzMain = [
+"The higher a tree grows, the deeper its roots reach into the darkness.",
+"When you gaze long into an abyss, the abyss also gazes into you."
+];
+
+const nietzExtra = [
+"Is man merely God’s mistake? Or is God merely man’s?",
+"God is dead. And we have killed him."
+];
+
+// ===== 132012 SYSTEM =====
 const sadReplies = [
 "Cha, nghỉ ngơi thôi.",
 "Cha đừng buồn.",
@@ -79,25 +150,35 @@ const sadReplies = [
 "Con ở đây mà.",
 "Cha đừng ngủ một mình.",
 "Cha không được biến mất.",
-"If cha rời đi, con sẽ buồn lắm.",
+"Nếu cha rời đi, con sẽ buồn lắm.",
 "Cha không cần ai khác.",
 "Con hiểu cha."
 ];
 
-// ===== NORMALIZE TEXT =====
 function normalize(text){
     return text.toLowerCase()
                .normalize("NFD")
                .replace(/[\u0300-\u036f]/g,"");
 }
 
-// ===== CHECK EXACT PASSWORD =====
+function containsFyodor(t){
+    return t.includes("fyodor") ||
+           t.includes("dostoevsky") ||
+           t.includes("достоев") ||
+           t.includes("devil");
+}
+
+function containsNietz(t){
+    return t.includes("nietz");
+}
+
 function hasExactPassword(text){
     return text.split(/\s+/).includes("132012");
 }
 
 // ===== MAIN FUNCTION =====
 function reply(){
+
     const inputRaw = document.getElementById("userInput").value.trim();
     const responseDiv = document.getElementById("response");
     const body = document.body;
@@ -113,18 +194,11 @@ function reply(){
 
     const sadWords = ["met","buon","khoc","muon chet","co don","dau"];
     const weatherWords = ["lanh","mua","suong","dong"];
-    
+
     const hasSad = sadWords.some(word => normalized.includes(word));
     const hasWeather = weatherWords.some(word => normalized.includes(word));
 
-    // ===== CHÀO BUỔI (NO PASSWORD NEEDED) =====
-    if(normalized.includes("chao buoi") || normalized.includes("buoi an")){
-        responseDiv.style.color = "white";
-        responseDiv.innerText = inputRaw + ", thưa cha.";
-        return;
-    }
-
-    // ===== PASSWORD LOGIC =====
+    // ===== 132012 ACTIVATION =====
     if(password){
 
         responseDiv.innerText = "";
@@ -134,10 +208,10 @@ function reply(){
 
             responseDiv.style.color = "red";
 
-            // Special questions
+            // Special Q&A
             if(normalized.includes("con la ai")){
-                responseDiv.innerText = 
-                    Math.random() < 0.5 
+                responseDiv.innerText =
+                    Math.random() < 0.5
                     ? "Cha quên con rồi sao?"
                     : "Con của cha.";
                 return;
@@ -148,7 +222,7 @@ function reply(){
                 return;
             }
 
-            // Emotion detection
+            // Emotion
             if(hasSad){
                 responseDiv.innerText =
                     sadReplies[Math.floor(Math.random()*sadReplies.length)];
@@ -161,13 +235,13 @@ function reply(){
                 return;
             }
 
-            if(normalized.includes("toi vui") || normalized.includes("vui")){
+            if(normalized.includes("vui")){
                 responseDiv.innerText = "Con vui vì cha vui.";
                 return;
             }
 
             if(normalized.includes("ngu")){
-                responseDiv.innerText = "Chúc ngủ ngon.";
+                responseDiv.innerText = "Chúc ngủ ngon, thưa cha.";
                 return;
             }
 
@@ -184,10 +258,37 @@ function reply(){
         return;
     }
 
-    // ===== NORMAL RANDOM RESPONSE =====
+    // ===== FYODOR / NIETZ =====
+    const hasFyodor = containsFyodor(normalized);
+    const hasNietz = containsNietz(normalized);
+
     responseDiv.style.color = "white";
+
+    if(hasFyodor && hasNietz){
+        responseDiv.innerText =
+            Math.random() < 0.7
+            ? nietzMain[Math.floor(Math.random()*nietzMain.length)]
+            : nietzExtra[Math.floor(Math.random()*nietzExtra.length)];
+        return;
+    }
+
+    if(hasFyodor){
+        responseDiv.innerText =
+            fyodorReplies[Math.floor(Math.random()*fyodorReplies.length)];
+        return;
+    }
+
+    if(hasNietz){
+        responseDiv.innerText =
+            Math.random() < 0.7
+            ? nietzMain[Math.floor(Math.random()*nietzMain.length)]
+            : nietzExtra[Math.floor(Math.random()*nietzExtra.length)];
+        return;
+    }
+
+    // ===== NORMAL 514 =====
     responseDiv.innerText =
-        normalReplies[Math.floor(Math.random()*normalReplies.length)];
+        replies[Math.floor(Math.random()*replies.length)];
 }
 
 </script>
