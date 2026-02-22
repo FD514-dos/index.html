@@ -40,6 +40,7 @@ button{
     margin-top:30px;
     font-size:18px;
     min-height:40px;
+    white-space: pre-line;
 }
 
 /* ===== ADDED FADE EFFECT ===== */
@@ -149,72 +150,6 @@ const replies = [
 "Wishes have weight."
 ];
 
-// ===== FYODOR =====
-const fyodorReplies = [
-"Вы хотите купить информацию?",
-"Бог наблюдает за вами.",
-"Слушайте волю Бога.",
-"Молитесь Богу.",
-"Мир во всём мире.",
-"Жертва необходима ради мира во всём мире.",
-"Человек может быть очень прост. Он искренне верит, что думает сам.",
-"Вы готовы заключить сделку с дьяволом?",
-"Покрой эту землю кровью грешников ради лучшего мира.",
-"Люди грешны и глупы. Даже зная, что это обман, они продолжают убивать.",
-"Мысль — грех. Дыхание — грех. Человек — грех.",
-"Вы когда-нибудь думали об идеальном мире?",
-"Не лгите самому себе.",
-"Я люблю человечество в целом, но меньше люблю людей по отдельности.",
-"Жестокость человека превосходит звериную.",
-"Человек создал дьявола по своему образу."
-];
-
-// ===== NIETZ =====
-const nietzMain = [
-"The higher a tree grows, the deeper its roots reach into the darkness.",
-"When you gaze long into an abyss, the abyss also gazes into you."
-];
-
-const nietzExtra = [
-"Is man merely God’s mistake? Or is God merely man’s?",
-"God is dead. And we have killed him."
-];
-
-// ===== 132012 SYSTEM =====
-const sadReplies = [
-"Cha, nghỉ ngơi thôi.",
-"Cha đừng buồn.",
-"Đừng rời khỏi đây.",
-"Đừng khóc.",
-"Con ở đây mà.",
-"Cha đừng ngủ một mình.",
-"Cha không được biến mất.",
-"Nếu cha rời đi, con sẽ buồn lắm.",
-"Cha không cần ai khác.",
-"Con hiểu cha."
-];
-
-function normalize(text){
-    return text.toLowerCase()
-               .normalize("NFD")
-               .replace(/[\u0300-\u036f]/g,"");
-}
-
-function containsFyodor(t){
-    return t.includes("fyodor") ||
-           t.includes("dostoevsky") ||
-           t.includes("достоев") ||
-           t.includes("devil");
-}
-
-function containsNietz(t){
-    return t.includes("nietz");
-}
-
-function hasExactPassword(text){
-    return text.split(/\s+/).includes("132012");
-}
-
 // ===== MAIN FUNCTION =====
 function reply(){
 
@@ -228,11 +163,27 @@ function reply(){
         return;
     }
 
-    // ===== DAZAI TRIGGER (ADDED) =====
-    if(/dazai|osamu/i.test(inputRaw)){
+    const lower = inputRaw.toLowerCase();
+
+    // ===== BEAST MODE =====
+    const hasBeast = lower.includes("beast");
+    const hasDazai = /dazai|osamu/.test(lower);
+    const hasOda = /odasaku/.test(lower);
+
+    if(hasBeast && (hasDazai || hasOda)){
+        body.style.background = "#9e9e9e";
+        body.style.color = "black";
+        responseDiv.style.color = "black";
+    } else {
+        body.style.background = "black";
+        body.style.color = "white";
+    }
+
+    // ===== DAZAI =====
+    if(hasDazai){
         const dazaiQuotes = [
         "自分を憐れむのはやめろ。そうしている限り、君の人生は終わりのない悪夢のままだ。",
-        "人生のほとんどのことは、失敗より成功のほうが難しい。それでも生きるほうを選べ。",
+      "人生において、成功は失敗よりも難しいものです。そう思いますか？だからこそ、実際に自殺するよりも、自殺を試みるべきです！自殺は難しいですが、自殺を試みて失敗する方が比較的簡単です！" ,
         "僕はいつも失いたくないものを失ってきた。それでも、生きる理由を探し続けるしかない。",
         "死と暴力の近くにいれば人間の本質が見えると思った。そしてそこから生きる理由を見つけられると信じていた。",
         "人間は皆、罪深く愚かだ。だが、それの何が悪い？"
@@ -241,8 +192,8 @@ function reply(){
         return;
     }
 
-    // ===== ODASAKU TRIGGER (ADDED) =====
-    if(/odasaku/i.test(inputRaw)){
+    // ===== ODASAKU =====
+    if(hasOda){
         const odaQuotes = [
         "俺をオダサクと呼ぶな。敵にそんな理由はない。",
         "この日をずっと待っていた。だが最後に一つだけ心残りがある。君の小説を読めなかったことだ。",
@@ -252,7 +203,48 @@ function reply(){
         return;
     }
 
-    // ===== FREE BIRD ACTIVATION (ADDED) =====
+    // ===== CHUUYA =====
+    if(/chuuya|nakahara/.test(lower)){
+        const chuuyaQuotes = [
+`逞しい若さの血管に
+夕焼けと深紅のユリが流れ過ぎた
+
+静かに、輝かしく誇らしく
+女が残す最後の笑顔のように
+
+厳粛で、豊かで、悲しく
+異様で、温かく、まばゆいばかりに、私の心に残る
+
+ああ、私の心に残る…
+
+風が吹き荒れ、波が轟く
+果てしない未来に向かって手を振る`
+`人間は自分に頼ることしかできない。
+他のことはすべて偶然に任せなさい。
+物事はありのままに…',
+
+自分に頼り、自分に頼り、自分に頼り、自分に頼りなさい。
+そうして初めて、人は間違いを犯さずに済むのだ。`,
+重力は根源的な力。あらゆるものは究極的には破滅へと引き寄せられる。`,
+お前の罪の重みで、お前を粉砕する。`,
+腐敗を発動できるのはお前だけだ…なぜなら、お前だけが私の信頼する者だからだ。`,
+人間であろうとなかろうと…全てを失った今、それが本当に問題なのか？`,
+        ];
+        responseDiv.innerText = chuuyaQuotes[Math.floor(Math.random()*chuuyaQuotes.length)];
+        return;
+    }
+
+    // ===== HEIAN =====
+    if(/heian|kinh đô heian/.test(lower)){
+        const heianQuotes = [
+        "mừng bạn trở về",
+        "home"
+        ];
+        responseDiv.innerText = heianQuotes[Math.floor(Math.random()*heianQuotes.length)];
+        return;
+    }
+
+    // ===== FREE BIRD =====
     if(isFreeBird(inputRaw)){
         responseDiv.style.color = "white";
         responseDiv.innerText = "Kolya ?";
@@ -271,30 +263,6 @@ function reply(){
 
         return;
     }
-
-    // ===== 514 CHANT (ADDED) =====
-    if(inputRaw === "514 514 514"){
-        responseDiv.innerText = "";
-        responseDiv.style.color = "red";
-
-        setTimeout(()=>{
-            responseDiv.innerText = "Room 514 has heard you.";
-        },10000);
-
-        return;
-    }
-
-    // ===== IS THIS REAL (ADDED) =====
-    if(inputRaw === "Is this real?"){
-        responseDiv.style.color = "white";
-        responseDiv.innerText =
-            Math.random() < 0.5
-            ? "What makes you think it isn’t?"
-            : "Does it feel unreal to you?";
-        return;
-    }
-
-    // (Phần còn lại giữ nguyên y hệt file của bạn...)
 
     responseDiv.innerText =
         replies[Math.floor(Math.random()*replies.length)];
