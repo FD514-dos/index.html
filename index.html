@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>高等中学 張瑞涵・514号室 意見箱</title>
+<title>チュオン・トゥイ・ハム 514号室の意見箱</title>
 
 <style>
 body{
@@ -65,9 +65,9 @@ button{
 <body>
 
 <div class="container">
-    <h1>高等中学 張瑞涵・514号室 意見箱</h1>
-    <input id="userInput" placeholder="願いを入力してください">
-    <button onclick="reply()">送信</button>
+    <h1>チュオン・トゥイ・ハム 514号室の意見箱</h1>
+    <input id="userInput" placeholder="Enter your wish">
+    <button onclick="reply()">Submit</button>
     <div id="response"></div>
 </div>
 
@@ -76,61 +76,61 @@ button{
 
 <script>
 
-// ===== GỐC =====
+// ===== MAIN RESPONSES =====
 const replies = [
-"あなたの願い、ここに残ります。",
-"代償は既に始まっています。",
-"誰かが代わりに支払います。",
-"あなたは選ばれました。",
-"戻る道はありません。",
-"514はあなたを拒みません。",
-"その言葉、取り消せません。",
-"あなたは監視されています。",
-"あなたは覚えていますか？",
-"ここに来たのは初めてではありません。",
-"その入力は保存されました。",
-"それは代償として十分ですか？",
-"願いは血を求めます。",
-"あなたの影が笑っています。",
-"514は応答しています。",
-"すでに一つ叶いました。",
-"あなたはそれに気づいていない。",
-"この部屋は出口がありません。",
-"願いはあなたを消耗させます。",
-"それでも続けますか？",
-"次はあなたの番です。",
-"その言葉、誰かに聞かれたくなかったのでは？",
-"514はあなたを知っています。",
-"その願い、前にも聞きました。",
-"時刻は関係ありません。ここは常に開いています。",
-"その願いは、本当にあなたのものですか？",
-"言葉にした瞬間、もう戻れません。",
-"願いは叶います。ただし、代償は等価ではありません。",
-"あなたは何を失う覚悟がありますか？",
-"それは救いですか、それとも逃避ですか？",
-"514号室はすべてを記録しています。",
-"あなたは既に答えを知っているはずです。",
-"遅いですね。",
-"まだ迷っていますか？",
-"ここに来た理由を忘れましたか？",
-"沈黙も一つの願いです。",
-"……本気ですか？",
-"入力は記録されました。",
-"514は沈黙を好みます。",
-"本当は別の願いがあるでしょう？",
-"強く願うほど、歪みます。",
-"あなたは救われたいのですか？",
-"叶った後の自分を想像できますか？",
-"後悔しないと断言できますか？",
-"この部屋は存在しません。",
-"あなたが見ているのは画面だけですか？",
-"ここは学校ではありません。",
-"それで満足できますか？",
-"軽い言葉ですね。",
-"願いにも重さがあります。"
+"Your wish will remain here.",
+"The price has already begun.",
+"Someone else will pay in your place.",
+"You have been chosen.",
+"There is no way back.",
+"514 does not reject you.",
+"Those words cannot be taken back.",
+"You are being watched.",
+"This is not your first time here.",
+"Do you remember? This is not your first time here.",
+"Your input has been saved.",
+"Is that enough as a sacrifice?",
+"Wishes demand blood.",
+"Your shadow is smiling.",
+"514 is responding.",
+"One has already been granted.",
+"You just haven't noticed it yet.",
+"This room has no exit.",
+"Your wish will drain you.",
+"Will you continue?",
+"It’s your turn next.",
+"You didn’t want anyone to hear that, did you?",
+"514 knows you.",
+"We’ve heard that wish before.",
+"Time does not matter. This place is always open.",
+"Is that wish truly yours?",
+"The moment you typed it, there was no return.",
+"Wishes come true. But the price is never equal.",
+"What are you willing to lose?",
+"Is it salvation, or escape?",
+"Room 514 records everything.",
+"You already know the answer.",
+"You’re late.",
+"Still hesitating?",
+"Have you forgotten why you came?",
+"Silence is also a wish.",
+"……Are you serious?",
+"Your input has been recorded.",
+"514 prefers silence.",
+"You actually have another wish, don’t you?",
+"The stronger you wish, the more it twists.",
+"Do you want to be saved?",
+"Can you imagine yourself after it comes true?",
+"Can you swear you won’t regret it?",
+"This room does not exist.",
+"Are you sure you're only looking at a screen?",
+"This is not a school.",
+"Will that satisfy you?",
+"Such light words.",
+"Wishes have weight."
 ];
 
-// ===== FYODOR (Russian) =====
+// ===== FYODOR =====
 const fyodorReplies = [
 "Вы хотите купить информацию?",
 "Бог наблюдает за вами.",
@@ -152,13 +152,13 @@ const fyodorReplies = [
 
 // ===== NIETZ =====
 const nietzMain = [
-"Ein Mensch sagte einst: Je höher der Baum wächst, desto tiefer reichen seine Wurzeln in die Dunkelheit.",
-"Wer mit Ungeheuern kämpft, soll zusehen, dass er nicht selbst zum Ungeheuer wird. Blickst du lange in einen Abgrund, blickt der Abgrund auch in dich."
+"One once said: The higher a tree grows, the deeper its roots reach into the darkness.",
+"He who fights with monsters should be careful not to become one. When you gaze long into an abyss, the abyss also gazes into you."
 ];
 
 const nietzExtra = [
-"Ist der Mensch ein Fehler Gottes? Oder Gott ein Fehler des Menschen?",
-"Gott ist tot. Und wir haben ihn getötet."
+"Is man merely God’s mistake? Or is God merely man’s?",
+"God is dead. And we have killed him."
 ];
 
 // ===== NORMALIZE =====
@@ -187,7 +187,7 @@ function reply(){
     const responseDiv = document.getElementById("response");
 
     if(input === ""){
-        responseDiv.innerText = "……入力してください。";
+        responseDiv.innerText = "……Please enter something.";
         return;
     }
 
@@ -196,7 +196,6 @@ function reply(){
     const hasFyodor = containsFyodor(t);
     const hasNietz = containsNietz(t);
 
-    // Nếu có cả hai → 85% ra Nietz chính
     if(hasFyodor && hasNietz){
         if(Math.random() < 0.85){
             responseDiv.innerText = nietzMain[Math.floor(Math.random()*nietzMain.length)];
