@@ -76,8 +76,8 @@ button{
 
 <script>
 
+// ===== GỐC =====
 const replies = [
-
 "あなたの願い、ここに残ります。",
 "代償は既に始まっています。",
 "誰かが代わりに支払います。",
@@ -128,22 +128,60 @@ const replies = [
 "それで満足できますか？",
 "軽い言葉ですね。",
 "願いにも重さがあります。"
-
 ];
 
-function trigger514(){
-    const big = document.getElementById("big514");
-    const smile = document.getElementById("cornerSmile");
+// ===== FYODOR (Russian) =====
+const fyodorReplies = [
+"Вы хотите купить информацию?",
+"Бог наблюдает за вами.",
+"Слушайте волю Бога.",
+"Молитесь Богу.",
+"Мир во всём мире.",
+"Жертва необходима ради мира во всём мире.",
+"Человек может быть очень прост. Он искренне верит, что думает сам.",
+"Вы готовы заключить сделку с дьяволом?",
+"Покрой эту землю кровью грешников ради лучшего мира.",
+"Люди грешны и глупы. Даже зная, что это обман, они продолжают убивать.",
+"Мысль — грех. Дыхание — грех. Человек — грех.",
+"Вы когда-нибудь думали об идеальном мире?",
+"Не лгите самому себе.",
+"Я люблю человечество в целом, но меньше люблю людей по отдельности.",
+"Жестокость человека превосходит звериную.",
+"Человек создал дьявола по своему образу."
+];
 
-    big.style.display = "block";
-    smile.style.display = "block";
+// ===== NIETZ =====
+const nietzMain = [
+"Ein Mensch sagte einst: Je höher der Baum wächst, desto tiefer reichen seine Wurzeln in die Dunkelheit.",
+"Wer mit Ungeheuern kämpft, soll zusehen, dass er nicht selbst zum Ungeheuer wird. Blickst du lange in einen Abgrund, blickt der Abgrund auch in dich."
+];
 
-    setTimeout(()=>{
-        big.style.display = "none";
-        smile.style.display = "none";
-    },20000);
+const nietzExtra = [
+"Ist der Mensch ein Fehler Gottes? Oder Gott ein Fehler des Menschen?",
+"Gott ist tot. Und wir haben ihn getötet."
+];
+
+// ===== NORMALIZE =====
+function normalize(text){
+    return text.toLowerCase()
+               .normalize("NFD")
+               .replace(/[\u0300-\u036f]/g,"");
 }
 
+function containsFyodor(t){
+    return t.includes("fyodor") ||
+           t.includes("dostoevsky") ||
+           t.includes("достоев") ||
+           t.includes("достоевский") ||
+           t.includes("devil") ||
+           t.includes("rats in the house of the dead");
+}
+
+function containsNietz(t){
+    return t.includes("nietz");
+}
+
+// ===== MAIN =====
 function reply(){
     const input = document.getElementById("userInput").value.trim();
     const responseDiv = document.getElementById("response");
@@ -153,8 +191,36 @@ function reply(){
         return;
     }
 
-    const random = replies[Math.floor(Math.random()*replies.length)];
-    responseDiv.innerText = random;
+    const t = normalize(input);
+
+    const hasFyodor = containsFyodor(t);
+    const hasNietz = containsNietz(t);
+
+    // Nếu có cả hai → 85% ra Nietz chính
+    if(hasFyodor && hasNietz){
+        if(Math.random() < 0.85){
+            responseDiv.innerText = nietzMain[Math.floor(Math.random()*nietzMain.length)];
+        } else {
+            responseDiv.innerText = nietzExtra[Math.floor(Math.random()*nietzExtra.length)];
+        }
+        return;
+    }
+
+    if(hasFyodor){
+        responseDiv.innerText = fyodorReplies[Math.floor(Math.random()*fyodorReplies.length)];
+        return;
+    }
+
+    if(hasNietz){
+        if(Math.random() < 0.85){
+            responseDiv.innerText = nietzMain[Math.floor(Math.random()*nietzMain.length)];
+        } else {
+            responseDiv.innerText = nietzExtra[Math.floor(Math.random()*nietzExtra.length)];
+        }
+        return;
+    }
+
+    responseDiv.innerText = replies[Math.floor(Math.random()*replies.length)];
 }
 
 </script>
