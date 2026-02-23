@@ -43,7 +43,6 @@ button{
     white-space: pre-line;
 }
 
-/* ===== ADDED FADE EFFECT ===== */
 .fade-out{
     animation: fadeOut 3s forwards;
 }
@@ -66,11 +65,12 @@ button{
 
 <script>
 
-// ===== TIME CHECK (00:00 - 01:00 RED MODE) =====
+/* =========================
+   TIME CHECK (00:00 - 01:00 RED MODE)
+========================= */
 function checkMidnightMode(){
     const now = new Date();
     const hour = now.getHours();
-
     if(hour === 0){
         document.body.style.color = "red";
         document.getElementById("title").style.color = "red";
@@ -79,22 +79,22 @@ function checkMidnightMode(){
         document.getElementById("submitBtn").style.color = "red";
     }
 }
-
 checkMidnightMode();
 
-
-// ===== 2AM - 3AM SLEEP MODE (ADDED) =====
+/* =========================
+   2AM - 3AM SLEEP MODE
+========================= */
 function checkSleepMode(){
     const now = new Date();
     const hour = now.getHours();
     return hour === 2;
 }
 
-
-// ===== FREE BIRD FUNCTION (ADDED) =====
+/* =========================
+   FREE BIRD FUNCTION
+========================= */
 function isFreeBird(text){
     const t = text.toLowerCase().trim();
-
     return t === "tôi là con chim tự do" ||
            t === "toi la con chim tu do" ||
            t === "i am a free bird" ||
@@ -102,8 +102,9 @@ function isFreeBird(text){
            t === "я свободная птица";
 }
 
-
-// ===== 514 MAIN RESPONSES =====
+/* =========================
+   514 MAIN RESPONSES
+========================= */
 const replies = [
 "Your wish will remain here.",
 "Your wish will remain here.",
@@ -142,7 +143,7 @@ const replies = [
 "Still hesitating?",
 "Have you forgotten why you came?",
 "Silence is also a wish.",
-"……Are you serious?",
+"I hear your wish",
 "Your input has been recorded.",
 "514 prefers silence.",
 "You actually have another wish, don’t you?",
@@ -158,7 +159,60 @@ const replies = [
 "Wishes have weight."
 ];
 
-// ===== CLASSROOM 514 KEYWORDS (ADDED) =====
+/* =========================
+   FYODOR
+========================= */
+const fyodorReplies = [
+"Вы хотите купить информацию?",
+"Бог наблюдает за вами.",
+"Слушайте волю Бога.",
+"Молитесь Богу.",
+"Мир во всём мире.",
+"Жертва необходима ради мира во всём мире.",
+"Человек может быть очень прост. Он искренне верит, что думает сам.",
+"Вы готовы заключить сделку с дьяволом?",
+"Покрой эту землю кровью грешников ради лучшего мира.",
+"Люди грешны и глупы. Даже зная, что это обман, они продолжают убивать.",
+"Мысль — грех. Дыхание — грех. Человек — грех.",
+"Вы когда-нибудь думали об идеальном мире?",
+"Не лгите самому себе.",
+"Я люблю человечество в целом, но меньше люблю людей по отдельности.",
+"Жестокость человека превосходит звериную.",
+"Человек создал дьявола по своему образу."
+];
+
+/* =========================
+   NIETZ
+========================= */
+const nietzMain = [
+"The higher a tree grows, the deeper its roots reach into the darkness.",
+"When you gaze long into an abyss, the abyss also gazes into you."
+];
+
+const nietzExtra = [
+"Is man merely God’s mistake? Or is God merely man’s?",
+"God is dead. And we have killed him."
+];
+
+/* =========================
+   132012 SYSTEM
+========================= */
+const sadReplies = [
+"Cha, nghỉ ngơi thôi.",
+"Cha đừng buồn.",
+"Đừng rời khỏi đây.",
+"Đừng khóc.",
+"Con ở đây mà.",
+"Cha đừng ngủ một mình.",
+"Cha không được biến mất.",
+"Nếu cha rời đi, con sẽ buồn lắm.",
+"Cha không cần ai khác.",
+"Con hiểu cha."
+];
+
+/* =========================
+   CLASSROOM 514
+========================= */
 const classroom514Triggers = [
 "phòng học 514",
 "em bị bắt nạt, đau quá",
@@ -192,8 +246,33 @@ const classroom514Replies = [
 "Punishment."
 ];
 
+/* =========================
+   UTILITIES
+========================= */
+function normalize(text){
+    return text.toLowerCase()
+               .normalize("NFD")
+               .replace(/[\u0300-\u036f]/g,"");
+}
 
-// ===== MAIN FUNCTION =====
+function containsFyodor(t){
+    return t.includes("fyodor") ||
+           t.includes("dostoevsky") ||
+           t.includes("достоев") ||
+           t.includes("devil");
+}
+
+function containsNietz(t){
+    return t.includes("nietz");
+}
+
+function hasExactPassword(text){
+    return text.split(/\s+/).includes("132012");
+}
+
+/* =========================
+   MAIN FUNCTION
+========================= */
 function reply(){
 
     const inputRaw = document.getElementById("userInput").value.trim();
@@ -207,8 +286,45 @@ function reply(){
     }
 
     const lower = inputRaw.toLowerCase();
+    const normalized = normalize(inputRaw);
+    const password = hasExactPassword(inputRaw);
 
-    // ===== 2AM RANDOM SLEEP (70%) =====
+    /* SPECIAL TRIGGERS */
+    if(inputRaw === "Farewell...."){
+        responseDiv.innerText = "Farewell, Fyodor Dostoyevsky";
+        return;
+    }
+
+    if(inputRaw === "Farewell, Fyodor Dostoyevsky"){
+        responseDiv.innerText = "My God, my God, why have you forgotten me ?";
+        return;
+    }
+
+    if(inputRaw === "What do you wish for ?"){
+        responseDiv.style.color = "red";
+        responseDiv.innerText = "The World.";
+        return;
+        }
+
+    if(inputRaw === "The Book"){
+        body.innerHTML = "";
+        body.style.background = "black";
+
+        setTimeout(()=>{
+            body.innerHTML = `
+                <div style="margin-top:30vh;">
+                    <div style="font-size:200px;color:red;">514</div>
+                    <div style="color:red;margin-top:20px;">
+                    do you want the world to be a better place, as God desires ?
+                    </div>
+                </div>
+            `;
+        },1000);
+
+        return;
+    
+
+    /* 2AM RANDOM SLEEP */
     if(checkSleepMode()){
         if(Math.random() < 0.7){
             responseDiv.innerText = Math.random() < 0.5 ? "go to sleep" : "đi ngủ đi";
@@ -216,15 +332,16 @@ function reply(){
         }
     }
 
-    // ===== CLASSROOM 514 SYSTEM =====
+    /* CLASSROOM 514 */
     for(let trigger of classroom514Triggers){
         if(lower.includes(trigger)){
-            responseDiv.innerText = classroom514Replies[Math.floor(Math.random()*classroom514Replies.length)];
+            responseDiv.innerText =
+                classroom514Replies[Math.floor(Math.random()*classroom514Replies.length)];
             return;
         }
     }
 
-    // ===== FYODOR / NIKOLAI EXPRESSIONS =====
+    /* FYODOR / NIKOLAI EXPRESSIONS */
     if(lower.includes("fyodor da")){
         responseDiv.innerText = ":(";
         return;
@@ -235,7 +352,7 @@ function reply(){
         return;
     }
 
-    // ===== RATS / DEVIL DEAL SYSTEM =====
+    /* RATS / DEVIL DEAL */
     if(
         /rats in the house of the dead/i.test(inputRaw) ||
         /devil/i.test(inputRaw) ||
@@ -243,7 +360,6 @@ function reply(){
         /悪魔|ラッツ/i.test(inputRaw) ||
         /quỷ|chuột/i.test(inputRaw)
     ){
-        responseDiv.style.color = "white";
         responseDiv.innerHTML = `
             <div>bạn muốn mua tình báo về tương lai chứ ?</div>
             <br>
@@ -253,7 +369,7 @@ function reply(){
         return;
     }
 
-    // ===== BEAST MODE =====
+    /* BEAST MODE */
     const hasBeast = lower.includes("beast");
     const hasDazai = /dazai|osamu/.test(lower);
     const hasOda = /odasaku/.test(lower);
@@ -267,78 +383,43 @@ function reply(){
         body.style.color = "white";
     }
 
-    // ===== DAZAI =====
+    /* DAZAI */
     if(hasDazai){
         const dazaiQuotes = [
-        "自分を憐れむのはやめろ。そうしている限り、君の人生は終わりのない悪夢のままだ。",
-        "人生において、成功は失敗よりも難しいものです。そう思いますか？だからこそ、実際に自殺するよりも、自殺を試みるべきです！自殺は難しいですが、自殺を試みて失敗する方が比較的簡単です！",
-        "僕はいつも失いたくないものを失ってきた。それでも、生きる理由を探し続けるしかない。",
-        "死と暴力の近くにいれば人間の本質が見えると思った。そしてそこから生きる理由を見つけられると信じていた。",
-        "人間は皆、罪深く愚かだ。だが、それの何が悪い？"
-        ];
-        responseDiv.innerText = dazaiQuotes[Math.floor(Math.random()*dazaiQuotes.length)];
+"自分を憐れむのはやめろ。そうしている限り、君の人生は終わりのない悪夢のままだ。",
+"人生において、成功は失敗よりも難しいものです。そう思いますか？だからこそ、実際に自殺するよりも、自殺を試みるべきです！自殺は難しいですが、自殺を試みて失敗する方が比較的簡単です！",
+"僕はいつも失いたくないものを失ってきた。それでも、生きる理由を探し続けるしかない。",
+"死と暴力の近くにいれば人間の本質が見えると思った。そしてそこから生きる理由を見つけられると信じていた。",
+"人間は皆、罪深く愚かだ。だが、それの何が悪い？"
+];
+        responseDiv.innerText =
+            dazaiQuotes[Math.floor(Math.random()*dazaiQuotes.length)];
         return;
     }
 
-    // ===== ODASAKU =====
+    /* ODASAKU */
     if(hasOda){
         const odaQuotes = [
-        "俺をオダサクと呼ぶな。敵にそんな理由はない。",
-        "この日をずっと待っていた。だが最後に一つだけ心残りがある。君の小説を読めなかったことだ。",
-        "良い人間になれ。"
-        ];
-        responseDiv.innerText = odaQuotes[Math.floor(Math.random()*odaQuotes.length)];
-        return;
-    }
-
-    // ===== CHUUYA =====
-    if(/chuuya|nakahara/.test(lower)){
-       const chuuyaQuotes = [
-`逞しい若さの血管に
-夕焼けと深紅のユリが流れ過ぎた
-
-静かに、輝かしく誇らしく
-女が残す最後の笑顔のように
-
-厳粛で、豊かで、悲しく
-異様で、温かく、まばゆいばかりに、私の心に残る
-
-ああ、私の心に残る…
-
-風が吹き荒れ、波が轟く
-果てしない未来に向かって手を振る`,
-
-`人間は自分に頼ることしかできない。
-他のことはすべて偶然に任せなさい。
-物事はありのままに…
-
-自分に頼り、自分に頼り、自分に頼り、自分に頼りなさい。
-そうして初めて、人は間違いを犯さずに済むのだ。`,
-
-"重力は根源的な力。あらゆるものは究極的には破滅へと引き寄せられる。",
-"お前の罪の重みで、お前を粉砕する。",
-"腐敗を発動できるのはお前だけだ…なぜなら、お前だけが私の信頼する者だからだ。",
-"人間であろうとなかろうと…全てを失った今、それが本当に問題なのか？"
+"俺をオダサクと呼ぶな。敵にそんな理由はない。",
+"この日をずっと待っていた。だが最後に一つだけ心残りがある。君の小説を読めなかったことだ。",
+"良い人間になれ."
 ];
-        responseDiv.innerText = chuuyaQuotes[Math.floor(Math.random()*chuuyaQuotes.length)];
+        responseDiv.innerText =
+            odaQuotes[Math.floor(Math.random()*odaQuotes.length)];
         return;
     }
 
-    // ===== HEIAN =====
+    /* HEIAN */
     if(/heian|kinh đô heian/.test(lower)){
-        const heianQuotes = [
-        "mừng bạn trở về",
-        "home"
-        ];
-        responseDiv.innerText = heianQuotes[Math.floor(Math.random()*heianQuotes.length)];
+        const heianQuotes = ["mừng bạn trở về","home"];
+        responseDiv.innerText =
+            heianQuotes[Math.floor(Math.random()*heianQuotes.length)];
         return;
     }
 
-    // ===== FREE BIRD =====
+    /* FREE BIRD */
     if(isFreeBird(inputRaw)){
-        responseDiv.style.color = "white";
         responseDiv.innerText = "Kolya ?";
-
         setTimeout(()=>{
             body.innerHTML = "";
             body.style.background = "black";
@@ -350,24 +431,55 @@ function reply(){
             body.style.fontSize = "40px";
             body.innerHTML = ":)";
         },3000);
-
         return;
     }
 
+    /* 132012 */
+    if(password){
+        responseDiv.style.color = "red";
+        responseDiv.innerText =
+            sadReplies[Math.floor(Math.random()*sadReplies.length)];
+        return;
+    }
+
+    /* FYODOR / NIETZ */
+    const hasFyodor = containsFyodor(normalized);
+    const hasNietz = containsNietz(normalized);
+
+    if(hasFyodor && hasNietz){
+        responseDiv.innerText =
+            Math.random()<0.7
+            ? nietzMain[Math.floor(Math.random()*nietzMain.length)]
+            : nietzExtra[Math.floor(Math.random()*nietzExtra.length)];
+        return;
+    }
+
+    if(hasFyodor){
+        responseDiv.innerText =
+            fyodorReplies[Math.floor(Math.random()*fyodorReplies.length)];
+        return;
+    }
+
+    if(hasNietz){
+        responseDiv.innerText =
+            Math.random()<0.7
+            ? nietzMain[Math.floor(Math.random()*nietzMain.length)]
+            : nietzExtra[Math.floor(Math.random()*nietzExtra.length)];
+        return;
+    }
+
+    /* DEFAULT 514 */
     responseDiv.innerText =
         replies[Math.floor(Math.random()*replies.length)];
 }
 
-// ===== DEAL BUTTON FUNCTIONS =====
+/* DEAL BUTTONS */
 function dealYes(){
     const responseDiv = document.getElementById("response");
-    const result = Math.random() < 0.5 ? "yes" : "no";
-    responseDiv.innerHTML = result;
+    responseDiv.innerHTML = Math.random()<0.5 ? "yes" : "no";
 }
-
 function dealNo(){
-    const responseDiv = document.getElementById("response");
-    responseDiv.innerHTML = "";
+    document.getElementById("response").innerHTML = "";
 }
 
 </script>
