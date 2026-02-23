@@ -64,6 +64,8 @@ button{
 </div>
 
 <script>
+let beastActive = false;
+let beastUsedOnce = false;
 
 /* =========================
    TIME CHECK (00:00 - 01:00 RED MODE)
@@ -287,8 +289,73 @@ function reply(){
 
     const lower = inputRaw.toLowerCase();
     const normalized = normalize(inputRaw);
-    const password = hasExactPassword(inputRaw);
+const password = hasExactPassword(inputRaw);
+if(!password){
+    responseDiv.style.color = "white";
+}
+/* =========================
+   BEAST SYSTEM
+========================= */
 
+const hasBeast = lower.includes("beast");
+const hasDazai = lower.includes("dazai");
+const hasChuuya = lower.includes("chuuya");
+const hasOda = lower.includes("oda");
+
+/* RESET ON SECOND INPUT */
+if(beastActive){
+    if(beastUsedOnce){
+        beastActive = false;
+        beastUsedOnce = false;
+        document.body.style.background = "black";
+        document.body.style.color = "white";
+    } else {
+        beastUsedOnce = true;
+    }
+}
+
+/* SOLO DAZAI BEAST */
+if(hasBeast && hasDazai && !hasChuuya && !hasOda){
+
+    beastActive = true;
+    beastUsedOnce = false;
+
+    document.body.innerHTML = "";
+    document.body.style.background = "black";
+    document.body.style.color = "white";
+
+    setTimeout(()=>{
+        document.body.innerHTML =
+        "<div style='margin-top:40vh;font-size:30px;'>Odasaku -</div>";
+    },500);
+
+    setTimeout(()=>{
+        document.body.innerHTML = "";
+    },5500);
+
+    setTimeout(()=>{
+        document.body.innerHTML =
+        "<div style='margin-top:40vh;font-size:20px;'>この日をずっと待っていた。だが最後に一つだけ心残りがある。君の小説を読めなかったことだ。</div>";
+    },6000);
+
+    return;
+}
+
+/* BEAST + CHUUYA */
+if(hasBeast && hasChuuya && !hasDazai){
+    beastActive = true;
+    beastUsedOnce = false;
+    document.body.style.background = "#888";
+    document.body.style.color = "orange";
+}
+
+/* BEAST + CHUUYA + DAZAI */
+if(hasBeast && hasChuuya && hasDazai){
+    beastActive = true;
+    beastUsedOnce = false;
+    document.body.style.background = "#888";
+    document.body.style.color = "red";
+}
     /* SPECIAL TRIGGERS */
     if(inputRaw === "Farewell"){
         responseDiv.innerText = "Farewell, Fyodor Dostoyevsky";
@@ -325,7 +392,13 @@ function reply(){
         
     }
     
-    
+    /* FD514 OWNERSHIP */
+if( lower === "fd514-dos"){
+    responseDiv.style.color = "white";
+    responseDiv.innerText =
+    "trang web thuộc sở hữu và bản quyền của FD514-dos, được tạo ra phục vụ page Trường Cao Trung Tư Thục Trương Thụy Hàm";
+    return;
+}
     /* 2AM RANDOM SLEEP */
     if(checkSleepMode()){
         if(Math.random() < 0.7){
@@ -352,37 +425,6 @@ function reply(){
     if(lower.includes("fyodor ori") || lower.includes("nikolai ori")){
         responseDiv.innerText = ":)";
         return;
-    }
-
-    /* RATS / DEVIL DEAL */
-    if(
-        /rats in the house of the dead/i.test(inputRaw) ||
-        /devil/i.test(inputRaw) ||
-        /дьявол|крысы/i.test(inputRaw) ||
-        /悪魔|ラッツ/i.test(inputRaw) ||
-        /quỷ|chuột/i.test(inputRaw)
-    ){
-        responseDiv.innerHTML = `
-            <div>bạn muốn mua tình báo về tương lai chứ ?</div>
-            <br>
-            <button onclick="dealYes()">có</button>
-            <button onclick="dealNo()">không</button>
-        `;
-        return;
-    }
-
-    /* BEAST MODE */
-    const hasBeast = lower.includes("beast");
-    const hasDazai = /dazai|osamu/.test(lower);
-    const hasOda = /odasaku/.test(lower);
-
-    if(hasBeast && (hasDazai || hasOda)){
-        body.style.background = "#9e9e9e";
-        body.style.color = "black";
-        responseDiv.style.color = "black";
-    } else {
-        body.style.background = "black";
-        body.style.color = "white";
     }
 
     /* DAZAI */
@@ -468,13 +510,22 @@ function reply(){
         return;
     }
 
-    /* 132012 */
-    if(password){
-        responseDiv.style.color = "red";
+   /* 132012 */
+if(password){
+
+    responseDiv.style.color = "red";
+
+    const onlyPassword = inputRaw.trim() === "132012";
+
+    if(onlyPassword){
         responseDiv.innerText =
             sadReplies[Math.floor(Math.random()*sadReplies.length)];
-        return;
+    }else{
+        responseDiv.innerText = "Thưa cha, cha gọi con.";
     }
+
+    return;
+}
 
     /* FYODOR / NIETZ */
     const hasFyodor = containsFyodor(normalized);
@@ -507,14 +558,6 @@ function reply(){
         replies[Math.floor(Math.random()*replies.length)];
 }
 
-/* DEAL BUTTONS */
-function dealYes(){
-    const responseDiv = document.getElementById("response");
-    responseDiv.innerHTML = Math.random()<0.5 ? "yes" : "no";
-}
-function dealNo(){
-    document.getElementById("response").innerHTML = "";
-}
 
 </script>
 
