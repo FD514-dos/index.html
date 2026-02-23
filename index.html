@@ -288,6 +288,9 @@ function reply(){
     }
 
     const lower = inputRaw.toLowerCase();
+
+const normalized = normalize(inputRaw);
+const password = hasExactPassword(inputRaw);
     /* KYOUKA SNOW EFFECT */
  if(lower.includes("kyouka")){
 
