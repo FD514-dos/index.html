@@ -289,17 +289,21 @@ function reply(){
 
     const lower = inputRaw.toLowerCase();
     /* KYOUKA SNOW EFFECT */
-if(lower.includes("kyouka")){
+ if(lower.includes("kyouka")){
 
-    startSnow();
+    console.log("KYOKA TRIGGERED");
 
-    body.style.backgroundColor = "black";   
+    if(typeof startSnow === "function"){
+        startSnow();
+    }
+
+    document.body.style.backgroundColor = "black";
     responseDiv.style.color = "white";
 
-    responseDiv.innerText = 
+    responseDiv.innerText =
     "探偵事務所こそが、私の本当の居場所だから。初めて、なりたい自分を見つけた。だから、たとえ自分の中に潜む何かを犠牲にしてでも、私は戦う。";
 
-    return;   
+    return;
 }
 /* =========================
    BEAST SYSTEM
@@ -353,8 +357,8 @@ if(hasBeast && hasOda && !hasDazai && !hasChuuya){
     beastActive = true;
     beastUsedOnce = false;
 
-    document.body.style.background = "#2a2a2a";  // xám giống Chuuya
-    document.body.style.color = "#000000";       // chữ đen
+    document.body.style.background = "#888";  
+    document.body.style.color = "#000000";      
 
     return;
 }
