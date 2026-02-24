@@ -66,7 +66,7 @@ button{
 <script>
 let beastActive = false;
 let beastUsedOnce = false;
-
+let futureMode = false;
 /* =========================
    TIME CHECK (00:00 - 01:00 RED MODE)
 ========================= */
@@ -288,7 +288,10 @@ function reply(){
     }
 
     const lower = inputRaw.toLowerCase();
-
+if(futureMode){
+    responseDiv.innerText = Math.random() < 0.5 ? "yes" : "no";
+    return;
+}
 const normalized = normalize(inputRaw);
 const password = hasExactPassword(inputRaw);
     /* KYOUKA SNOW EFFECT */
@@ -305,6 +308,19 @@ const password = hasExactPassword(inputRaw);
 
     responseDiv.innerText =
     "探偵事務所こそが、私の本当の居場所だから。初めて、なりたい自分を見つけた。だから、たとえ自分の中に潜む何かを犠牲にしてでも、私は戦う。";
+
+    return;
+}
+    /* RATS TRIGGER */
+if(lower === "rats" || lower === "rats in the house of the dead"){
+
+    responseDiv.innerHTML = `
+        <div>Bạn muốn mua tình báo về tương lai ?</div>
+        <div style="margin-top:15px;">
+            <button onclick="buyFuture(true)">YES</button>
+            <button onclick="buyFuture(false)">NO</button>
+        </div>
+    `;
 
     return;
 }
@@ -581,8 +597,21 @@ if(password){
     responseDiv.innerText =
         replies[Math.floor(Math.random()*replies.length)];
 }
+function buyFuture(choice){
 
+    const responseDiv = document.getElementById("response");
 
+    if(choice){
+        futureMode = true;
+        responseDiv.innerText = "Вы готовы заключить сделку.";
+    }else{
+        responseDiv.innerText = "Bạn đã từ chối tình báo.";
+    }
+
+    setTimeout(()=>{
+        responseDiv.innerHTML = "";
+    },1500);
+}
 </script>
 
 </body>
