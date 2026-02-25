@@ -73,7 +73,7 @@ let futureMode = false;
 function checkMidnightMode(){
     const now = new Date();
     const hour = now.getHours();
-    if(hour === 0){
+   if(hour === 0 || hour === 1){
         document.body.style.color = "red";
         document.getElementById("title").style.color = "red";
         document.getElementById("response").style.color = "red";
