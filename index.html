@@ -355,7 +355,9 @@ const hasBeast = lower.includes("beast");
 const hasDazai = lower.includes("dazai");
 const hasChuuya = lower.includes("chuuya");
 const hasOda = lower.includes("oda");
-
+const hasAtsushi = lower.includes("atsushi");
+const hasAku = lower.includes("akutagawa") || lower.includes("ryunosuke");
+    
 /* RESET ON SECOND INPUT */
 if(beastActive){
     if(beastUsedOnce){
@@ -481,7 +483,7 @@ if( lower === "fd514-dos"){
 /* EXAM BLESSING */
 const examKeywords = ["thi","ussh","đỗ","tot nghiep","tốt nghiệp","toán"];
 
-if(examKeywords.includes(lower)){
+if(examKeywords.some(keyword => lower.includes(keyword))){{
     const examReplies = [
         "bạn sẽ làm bài thi rất tốt",
         "bạn sẽ là thủ khoa",
