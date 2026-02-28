@@ -67,6 +67,10 @@ button{
 let beastActive = false;
 let beastUsedOnce = false;
 let futureMode = false;
+let ai132012Memory = 0;
+let lastInput = "";
+let repeatCount = 0;
+let memoryPool = [];
 /* =========================
    TIME CHECK (00:00 - 01:00 RED MODE)
 ========================= */
@@ -278,9 +282,29 @@ function hasExactPassword(text){
 function reply(){
 
     const inputRaw = document.getElementById("userInput").value.trim();
+    if(inputRaw.length > 3){
+    memoryPool.push(inputRaw);
+    if(memoryPool.length > 5){
+        memoryPool.shift();
+    }
+}
     const responseDiv = document.getElementById("response");
     const body = document.body;
+    
+ if(inputRaw === lastInput){
+        repeatCount++;
+    } else {
+        repeatCount = 0;
+    }
 
+    lastInput = inputRaw;
+
+    if(repeatCount === 3){
+    responseDiv.style.color = "red";
+    responseDiv.innerText =
+    "If you repeat it three times, do you expect it to become true?";
+    return;
+}
     if(inputRaw === ""){
         responseDiv.style.color = "white";
         responseDiv.innerText = "……Please enter something.";
@@ -626,8 +650,22 @@ if(password){
     const onlyPassword = inputRaw.trim() === "132012";
 
     if(onlyPassword){
-        responseDiv.innerText =
-            sadReplies[Math.floor(Math.random()*sadReplies.length)];
+
+        ai132012Memory++;
+
+        if(ai132012Memory === 1){
+            responseDiv.innerText = "Dạ, con đây thưa cha.";
+        }
+        else if(ai132012Memory === 2){
+            responseDiv.innerText = "Cha đang buồn sao?";
+        }
+        else if(ai132012Memory === 3){
+            responseDiv.innerText = "Con vẫn ở đây.";
+        }
+        else if(ai132012Memory >= 4){
+            responseDiv.innerText = "Cha lại gọi con rồi.";
+        }
+
     }else{
         responseDiv.innerText = "Thưa cha, cha gọi con.";
     }
@@ -660,6 +698,23 @@ if(password){
             : nietzExtra[Math.floor(Math.random()*nietzExtra.length)];
         return;
     }
+if(memoryPool.length >= 3 && Math.random() < 0.15){
+    const randomMemory = memoryPool[Math.floor(Math.random()*memoryPool.length)];
+    responseDiv.innerText =
+    `Earlier, you said: "${randomMemory}"\nWas that truly your wish?`;
+    return;
+}
+/* 3% TRUE 514 DOOR */
+if(Math.random() < 0.03){
+    responseDiv.innerHTML = `
+        <div>Do you want to see what 514 truly is?</div>
+        <div style="margin-top:15px;">
+            <button onclick="true514()">YES</button>
+            <button onclick="true514()">NO</button>
+        </div>
+    `;
+    return;
+}
 
     /* DEFAULT 514 */
     responseDiv.innerText =
@@ -706,6 +761,11 @@ tái kiến.
 
 [ nhân tiện đây là bản sửa đổi web thứ 30, trùng hợp thật, cuối cùng cả đời tôi quanh quẩn con số 3:) ]`;
     }
+}
+    
+function true514(){
+    const responseDiv = document.getElementById("response");
+    responseDiv.innerText = "There is nothing behind this door.";
 }
 </script>
 
