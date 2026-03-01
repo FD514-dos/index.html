@@ -873,12 +873,11 @@ function start514Game(){
         grounded: false
     };
 
-    // 13 bàn đặt trên mặt đất
     const desks = [];
     for(let i=0;i<13;i++){
         desks.push({
             x: 200 + i*180,
-            y: groundY - 35, // mặt bàn cao hơn mặt đất
+            y: groundY - 35,
             width: 80,
             height: 8
         });
@@ -891,14 +890,41 @@ function start514Game(){
         height: 80
     };
 
+    function drawBackground(){
+
+        ctx.fillStyle = "black";
+
+        // bảng đen
+        ctx.fillRect(canvas.width/2 - 200, 60, 400, 100);
+
+        // viền bảng
+        ctx.strokeRect(canvas.width/2 - 200, 60, 400, 100);
+
+        // đồng hồ
+        const clockX = canvas.width - 100;
+        const clockY = 100;
+        const radius = 30;
+
+        ctx.beginPath();
+        ctx.arc(clockX, clockY, radius, 0, Math.PI*2);
+        ctx.stroke();
+
+        // kim giờ (12h)
+        ctx.beginPath();
+        ctx.moveTo(clockX, clockY);
+        ctx.lineTo(clockX, clockY - 18);
+        ctx.stroke();
+
+        // kim phút (12h)
+        ctx.beginPath();
+        ctx.moveTo(clockX, clockY);
+        ctx.lineTo(clockX, clockY - 25);
+        ctx.stroke();
+    }
+
     function drawDesk(d){
-        // mặt bàn
         ctx.fillRect(d.x - cameraX, d.y, d.width, d.height);
-
-        // chân trái
         ctx.fillRect(d.x - cameraX + 8, d.y + d.height, 6, 35);
-
-        // chân phải
         ctx.fillRect(d.x - cameraX + d.width - 14, d.y + d.height, 6, 35);
     }
 
@@ -906,28 +932,25 @@ function start514Game(){
 
         ctx.clearRect(0,0,canvas.width,canvas.height);
 
-        // movement
+        drawBackground();
+
         player.dx = 0;
         if(keys["ArrowLeft"]) player.dx = -player.speed;
         if(keys["ArrowRight"]) player.dx = player.speed;
 
         player.x += player.dx;
 
-        // gravity
         player.dy += gravity;
         player.y += player.dy;
         player.grounded = false;
 
-        // ground collision (đứng trên đất)
         if(player.y + player.height > groundY - 5){
             player.y = groundY - 5 - player.height;
             player.dy = 0;
             player.grounded = true;
         }
 
-        // desk collision (đứng trên mặt bàn)
         for(let desk of desks){
-
             if(
                 player.x < desk.x + desk.width &&
                 player.x + player.width > desk.x &&
@@ -941,32 +964,25 @@ function start514Game(){
             }
         }
 
-        // jump
         if((keys["Space"] || keys["ArrowUp"]) && player.grounded){
             player.dy = player.jump;
         }
 
-        // camera follow
         cameraX = player.x - 150;
         if(cameraX < 0) cameraX = 0;
 
         ctx.fillStyle = "black";
 
-        // ground
         ctx.fillRect(-cameraX, groundY, canvas.width*3, 80);
 
-        // desks
         for(let desk of desks){
             drawDesk(desk);
         }
 
-        // door
         ctx.fillRect(door.x - cameraX, door.y, door.width, door.height);
 
-        // player
         ctx.fillRect(player.x - cameraX, player.y, player.width, player.height);
 
-        // win condition
         if(
             player.x < door.x + door.width &&
             player.x + player.width > door.x &&
