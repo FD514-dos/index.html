@@ -859,35 +859,35 @@ function start514Game(){
     let keys = {};
     let cameraX = 0;
 
+    const groundY = 320;
+
     const player = {
         x: 50,
-        y: 200,
+        y: 260,
         width: 14,
         height: 14,
         dx: 0,
         dy: 0,
         speed: 4,
-        jump: -13,
+        jump: -12,
         grounded: false
     };
 
-    // 13 bàn học
+    // 13 bàn đặt trên mặt đất
     const desks = [];
     for(let i=0;i<13;i++){
         desks.push({
-            x: 200 + i*220,
-            y: 260 - (i%2)*30,
-            width: 120,
-            height: 15
+            x: 200 + i*180,
+            y: groundY - 35, // mặt bàn cao hơn mặt đất
+            width: 80,
+            height: 8
         });
     }
 
-    const groundY = 320;
-
     const door = {
-        x: desks[12].x + 250,
-        y: 240,
-        width: 50,
+        x: desks[12].x + 200,
+        y: groundY - 80,
+        width: 40,
         height: 80
     };
 
@@ -896,10 +896,10 @@ function start514Game(){
         ctx.fillRect(d.x - cameraX, d.y, d.width, d.height);
 
         // chân trái
-        ctx.fillRect(d.x - cameraX + 10, d.y + d.height, 10, 40);
+        ctx.fillRect(d.x - cameraX + 8, d.y + d.height, 6, 35);
 
         // chân phải
-        ctx.fillRect(d.x - cameraX + d.width - 20, d.y + d.height, 10, 40);
+        ctx.fillRect(d.x - cameraX + d.width - 14, d.y + d.height, 6, 35);
     }
 
     function update(){
@@ -918,21 +918,21 @@ function start514Game(){
         player.y += player.dy;
         player.grounded = false;
 
-        // ground
-        if(player.y + player.height > groundY){
-            player.y = groundY - player.height;
+        // ground collision (đứng trên đất)
+        if(player.y + player.height > groundY - 5){
+            player.y = groundY - 5 - player.height;
             player.dy = 0;
             player.grounded = true;
         }
 
-        // desk collision
+        // desk collision (đứng trên mặt bàn)
         for(let desk of desks){
 
             if(
                 player.x < desk.x + desk.width &&
                 player.x + player.width > desk.x &&
                 player.y + player.height > desk.y &&
-                player.y + player.height < desk.y + desk.height + 20 &&
+                player.y + player.height < desk.y + desk.height + 15 &&
                 player.dy >= 0
             ){
                 player.y = desk.y - player.height;
@@ -966,7 +966,7 @@ function start514Game(){
         // player
         ctx.fillRect(player.x - cameraX, player.y, player.width, player.height);
 
-        // win
+        // win condition
         if(
             player.x < door.x + door.width &&
             player.x + player.width > door.x &&
