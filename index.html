@@ -337,7 +337,17 @@ if(isNight){
     nightInputCount++;
 
     if(nightInputCount === 3){
-        showExitChoice();
+    function showExitChoice(){
+
+    const responseDiv = document.getElementById("response");
+
+    responseDiv.innerHTML = `
+        Exit?
+        <br><br>
+        <button onclick="start514Game()">Yes</button>
+        <button onclick="cancelExit()">No</button>
+    `;
+};
         return;
     }
 }
