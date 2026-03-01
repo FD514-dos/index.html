@@ -336,20 +336,10 @@ const isNight = (hour >= 0 && hour < 3);
 if(isNight){
     nightInputCount++;
 
-    if(nightInputCount === 3){
-    function showExitChoice(){
-
-    const responseDiv = document.getElementById("response");
-
-    responseDiv.innerHTML = `
-        Exit?
-        <br><br>
-        <button onclick="start514Game()">Yes</button>
-        <button onclick="cancelExit()">No</button>
-    `;
-};
-        return;
-    }
+  if(nightInputCount === 3){
+    showExitChoice();
+    return;
+      }
 }
     if(inputRaw.length > 3){
     memoryPool.push(inputRaw);
@@ -842,7 +832,7 @@ function true514(){
     responseDiv.innerHTML = `
         Exit?
         <br><br>
-        <button onclick="enterGame()">Yes</button>
+        <button onclick="start514Game()">Yes</button>
         <button onclick="cancelExit()">No</button>
     `;
 }
