@@ -845,12 +845,12 @@ function start514Game(){
 
     document.body.innerHTML = "";
     document.body.style.margin = "0";
-    document.body.style.background = "black";
+    document.body.style.background = "#1a1822";
     document.body.style.overflow = "hidden";
 
     const canvas = document.createElement("canvas");
-    canvas.width = window.innerWidth;
-    canvas.height = 500;
+    canvas.width = 900;
+    canvas.height = 520;
     document.body.appendChild(canvas);
 
     const ctx = canvas.getContext("2d");
@@ -858,85 +858,106 @@ function start514Game(){
     let keys = {};
 
     const player = {
-        x: 400,
-        y: 350,
+        x: 440,
+        y: 380,
         size: 14,
-        speed: 3
+        speed: 2.5
     };
 
-    const walls = [];
+    // ===== MAP OBJECTS =====
 
-    // TƯỜNG LỚP
-    walls.push({x:0,y:0,width:canvas.width,height:20});
-    walls.push({x:0,y:0,width:20,height:canvas.height});
-    walls.push({x:0,y:canvas.height-20,width:canvas.width,height:20});
-    walls.push({x:canvas.width-20,y:0,width:20,height:canvas.height});
+    const walls = [
+        {x:0,y:0,width:900,height:20},
+        {x:0,y:0,width:20,height:520},
+        {x:0,y:500,width:900,height:20},
+        {x:880,y:0,width:20,height:520}
+    ];
 
-    // BÀN HỌC 3x3
+    const podium = { x:300, y:90, width:300, height:70 };
+
+    const teacherDesk = { x:350, y:180, width:200, height:50 };
+
     const desks = [];
-    const startX = canvas.width/2 - 150;
-    const startY = 200;
+    const startX = 230;
+    const startY = 260;
 
-    for(let row=0; row<3; row++){
-        for(let col=0; col<3; col++){
+    for(let r=0;r<3;r++){
+        for(let c=0;c<4;c++){
             desks.push({
-                x: startX + col*120,
-                y: startY + row*80,
-                width: 70,
-                height: 40
+                x:startX + c*120,
+                y:startY + r*80,
+                width:70,
+                height:45
             });
         }
     }
 
-    // BÀN GIÁO VIÊN
-    const teacherDesk = {
-        x: canvas.width/2 - 100,
-        y: 80,
-        width: 200,
-        height: 50
-    };
+    const door = { x:430, y:20, width:40, height:20 };
 
-    // CỬA
-    const door = {
-        x: canvas.width/2 - 40,
-        y: 20,
-        width: 80,
-        height: 20
-    };
+    // ===== DRAWING =====
 
     function drawBackground(){
 
-        // SÀN
-        ctx.fillStyle = "#d8c8a8";
-        ctx.fillRect(0,0,canvas.width,canvas.height);
+        // TƯỜNG TRÊN
+        ctx.fillStyle = "#2a2633";
+        ctx.fillRect(0,0,900,220);
+
+        // SÀN GỖ
+        ctx.fillStyle = "#4b3a2f";
+        ctx.fillRect(0,220,900,300);
+
+        // VÂN GỖ
+        ctx.fillStyle = "#3d2e25";
+        for(let i=0;i<40;i++){
+            ctx.fillRect(0,230 + i*7,900,2);
+        }
+
+        // VIỀN PHÂN CÁCH TƯỜNG/SÀN
+        ctx.fillStyle = "#1e1b26";
+        ctx.fillRect(0,215,900,8);
 
         // BẢNG ĐEN
-        ctx.fillStyle = "#2f3e2f";
-        ctx.fillRect(canvas.width/2 - 200, 30, 400, 40);
+        ctx.fillStyle = "#1f2a1f";
+        ctx.fillRect(250,40,400,60);
 
-        // ĐỒNG HỒ 12H
+        ctx.strokeStyle = "#3e2c1c";
+        ctx.lineWidth = 4;
+        ctx.strokeRect(250,40,400,60);
+
+        // ĐỒNG HỒ
         ctx.beginPath();
-        ctx.arc(canvas.width - 70, 60, 20, 0, Math.PI*2);
-        ctx.fillStyle = "white";
+        ctx.arc(780,70,18,0,Math.PI*2);
+        ctx.fillStyle = "#eaeaea";
         ctx.fill();
-        ctx.strokeStyle = "black";
+        ctx.strokeStyle = "#000";
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.moveTo(canvas.width - 70, 60);
-        ctx.lineTo(canvas.width - 70, 45);
+        ctx.moveTo(780,70);
+        ctx.lineTo(780,55);
         ctx.stroke();
+
+        // BỤC GIẢNG
+        ctx.fillStyle = "#5b4336";
+        ctx.fillRect(podium.x,podium.y,podium.width,podium.height);
+
+        ctx.strokeStyle = "#2c1f17";
+        ctx.strokeRect(podium.x,podium.y,podium.width,podium.height);
     }
 
     function drawDesk(d){
-        ctx.fillStyle = "#c89b5e";
-        ctx.fillRect(d.x, d.y, d.width, d.height);
+        ctx.fillStyle = "#6b4f3f";
+        ctx.fillRect(d.x,d.y,d.width,d.height);
 
-        ctx.strokeStyle = "#5a3d1e";
-        ctx.strokeRect(d.x, d.y, d.width, d.height);
+        ctx.strokeStyle = "#2c1f17";
+        ctx.strokeRect(d.x,d.y,d.width,d.height);
+
+        // ghế
+        ctx.fillStyle = "#4a342a";
+        ctx.fillRect(d.x + 20, d.y + d.height - 10, 30, 8);
     }
 
-    function collision(rect){
+    function collisionRect(rect){
         return (
             player.x < rect.x + rect.width &&
             player.x + player.size > rect.x &&
@@ -947,7 +968,8 @@ function start514Game(){
 
     function update(){
 
-        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.clearRect(0,0,900,520);
+
         drawBackground();
 
         let newX = player.x;
@@ -958,15 +980,15 @@ function start514Game(){
         if(keys["ArrowUp"] || keys["KeyW"]) newY -= player.speed;
         if(keys["ArrowDown"] || keys["KeyS"]) newY += player.speed;
 
-        const obstacles = [...walls, ...desks, teacherDesk];
+        const obstacles = [...walls, podium, teacherDesk, ...desks];
 
         let blocked = false;
-        for(let obj of obstacles){
+        for(let o of obstacles){
             if(
-                newX < obj.x + obj.width &&
-                newX + player.size > obj.x &&
-                newY < obj.y + obj.height &&
-                newY + player.size > obj.y
+                newX < o.x + o.width &&
+                newX + player.size > o.x &&
+                newY < o.y + o.height &&
+                newY + player.size > o.y
             ){
                 blocked = true;
                 break;
@@ -978,20 +1000,22 @@ function start514Game(){
             player.y = newY;
         }
 
-        // VẼ CỬA
-        ctx.fillStyle = "#6b3f1f";
-        ctx.fillRect(door.x, door.y, door.width, door.height);
-
-        // VẼ BÀN
-        desks.forEach(drawDesk);
+        // VẼ ĐỒ VẬT
         drawDesk(teacherDesk);
+        desks.forEach(drawDesk);
+
+        // CỬA
+        ctx.fillStyle = "#3a2a22";
+        ctx.fillRect(door.x,door.y,door.width,door.height);
+
+        ctx.strokeStyle = "#000";
+        ctx.strokeRect(door.x,door.y,door.width,door.height);
 
         // PLAYER
-        ctx.fillStyle = "black";
-        ctx.fillRect(player.x, player.y, player.size, player.size);
+        ctx.fillStyle = "#000";
+        ctx.fillRect(player.x,player.y,player.size,player.size);
 
-        // CHECK WIN
-        if(collision(door)){
+        if(collisionRect(door)){
             winGame();
             return;
         }
@@ -1007,7 +1031,7 @@ function start514Game(){
         document.body.style.justifyContent = "center";
         document.body.style.alignItems = "center";
         document.body.style.height = "100vh";
-        document.body.innerText = "bạn đã rời khỏi lớp học";
+        document.body.innerText = "cánh cửa đã mở.";
     }
 
     document.addEventListener("keydown", e => keys[e.code] = true);
