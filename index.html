@@ -857,12 +857,13 @@ function start514Game(){
 
     const gravity = 0.7;
     let keys = {};
+    let cameraX = 0;
 
     const player = {
         x: 50,
         y: 200,
-        width: 15,
-        height: 15,
+        width: 14,
+        height: 14,
         dx: 0,
         dy: 0,
         speed: 4,
@@ -870,30 +871,36 @@ function start514Game(){
         grounded: false
     };
 
-    // 13 bàn
+    // 13 bàn học
     const desks = [];
     for(let i=0;i<13;i++){
         desks.push({
-            x: 150 + i*180,
-            y: 260 - (i%3)*40,
-            width: 100,
-            height: 20
+            x: 200 + i*220,
+            y: 260 - (i%2)*30,
+            width: 120,
+            height: 15
         });
     }
 
-    const ground = {
-        x: 0,
-        y: 320,
-        width: canvas.width,
+    const groundY = 320;
+
+    const door = {
+        x: desks[12].x + 250,
+        y: 240,
+        width: 50,
         height: 80
     };
 
-    const door = {
-        x: desks[12].x + 200,
-        y: 240,
-        width: 40,
-        height: 80
-    };
+    function drawDesk(d){
+        // mặt bàn
+        ctx.fillRect(d.x - cameraX, d.y, d.width, d.height);
+
+        // chân trái
+        ctx.fillRect(d.x - cameraX + 10, d.y + d.height, 10, 40);
+
+        // chân phải
+        ctx.fillRect(d.x - cameraX + d.width - 20, d.y + d.height, 10, 40);
+    }
 
     function update(){
 
@@ -911,26 +918,21 @@ function start514Game(){
         player.y += player.dy;
         player.grounded = false;
 
-        // ground collision
-        if(player.y + player.height > ground.y){
-            player.y = ground.y - player.height;
+        // ground
+        if(player.y + player.height > groundY){
+            player.y = groundY - player.height;
             player.dy = 0;
             player.grounded = true;
         }
 
-        // desk collision (platform logic)
+        // desk collision
         for(let desk of desks){
 
-            // draw desk
-            ctx.fillStyle = "black";
-            ctx.fillRect(desk.x, desk.y, desk.width, desk.height);
-
-            // collision from top only
             if(
                 player.x < desk.x + desk.width &&
                 player.x + player.width > desk.x &&
                 player.y + player.height > desk.y &&
-                player.y + player.height < desk.y + desk.height + 15 &&
+                player.y + player.height < desk.y + desk.height + 20 &&
                 player.dy >= 0
             ){
                 player.y = desk.y - player.height;
@@ -944,17 +946,27 @@ function start514Game(){
             player.dy = player.jump;
         }
 
-        // draw ground
-        ctx.fillRect(ground.x, ground.y, ground.width, ground.height);
+        // camera follow
+        cameraX = player.x - 150;
+        if(cameraX < 0) cameraX = 0;
 
-        // draw player
         ctx.fillStyle = "black";
-        ctx.fillRect(player.x, player.y, player.width, player.height);
 
-        // draw door
-        ctx.fillRect(door.x, door.y, door.width, door.height);
+        // ground
+        ctx.fillRect(-cameraX, groundY, canvas.width*3, 80);
 
-        // win condition
+        // desks
+        for(let desk of desks){
+            drawDesk(desk);
+        }
+
+        // door
+        ctx.fillRect(door.x - cameraX, door.y, door.width, door.height);
+
+        // player
+        ctx.fillRect(player.x - cameraX, player.y, player.width, player.height);
+
+        // win
         if(
             player.x < door.x + door.width &&
             player.x + player.width > door.x &&
@@ -984,7 +996,6 @@ function start514Game(){
 
     update();
 }
-
 </script>
 
 </body>
