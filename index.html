@@ -859,12 +859,12 @@ function start514Game(){
 
     const player = {
         x: 120,
-        y: 330,
+        y: 350,
         size: 14,
         speed: 2.5
     };
 
-    // ===== WALLS =====
+    // ===== TƯỜNG =====
     const walls = [
         {x:0,y:0,width:900,height:20},
         {x:0,y:0,width:20,height:520},
@@ -872,19 +872,42 @@ function start514Game(){
         {x:880,y:0,width:20,height:520}
     ];
 
-    // ===== BỤC GIẢNG =====
-    const podium = { x:300, y:140, width:300, height:70 };
+    // ===== BẢNG ĐEN (đặt xuống vị trí bảng nâu cũ) =====
+    const blackboard = { 
+        x:300, 
+        y:100,   // đã hạ xuống
+        width:300, 
+        height:60 
+    };
 
-    // ===== BẢNG ĐEN (thay phần nâu phía trên) =====
-    const blackboard = { x:250, y:60, width:400, height:60 };
+    // ===== BỤC GIẢNG =====
+    const podium = { 
+        x:280, 
+        y:170, 
+        width:340, 
+        height:70 
+    };
 
     // ===== BÀN GIÁO VIÊN =====
-    const teacherDesk = { x:350, y:220, width:200, height:45 };
+    const teacherDesk = { 
+        x:350, 
+        y:250, 
+        width:200, 
+        height:45 
+    };
+
+    // ===== CỬA (bên phải, cạnh bàn giáo viên) =====
+    const door = { 
+        x:650, 
+        y:235, 
+        width:60, 
+        height:90 
+    };
 
     // ===== BÀN HỌC =====
     const desks = [];
     const startX = 230;
-    const startY = 290;
+    const startY = 310;
 
     for(let r=0;r<3;r++){
         for(let c=0;c<4;c++){
@@ -897,12 +920,9 @@ function start514Game(){
         }
     }
 
-    // ===== CỬA (xuống phải) =====
-    const door = { x:820, y:360, width:50, height:80 };
-
     function drawBackground(){
 
-        // TƯỜNG TRÊN
+        // TƯỜNG
         ctx.fillStyle = "#2a2633";
         ctx.fillRect(0,0,900,260);
 
@@ -915,7 +935,6 @@ function start514Game(){
             ctx.fillRect(0,270 + i*6,900,2);
         }
 
-        // VIỀN PHÂN CÁCH
         ctx.fillStyle = "#1e1b26";
         ctx.fillRect(0,255,900,8);
 
@@ -929,18 +948,18 @@ function start514Game(){
 
         // ĐỒNG HỒ
         ctx.beginPath();
-        ctx.arc(780,90,18,0,Math.PI*2);
+        ctx.arc(780,110,18,0,Math.PI*2);
         ctx.fillStyle = "#eaeaea";
         ctx.fill();
         ctx.strokeStyle = "#000";
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.moveTo(780,90);
-        ctx.lineTo(780,75);
+        ctx.moveTo(780,110);
+        ctx.lineTo(780,95);
         ctx.stroke();
 
-        // BỤC GIẢNG
+        // ===== BỤC GIẢNG =====
         ctx.fillStyle = "#5b4336";
         ctx.fillRect(podium.x,podium.y,podium.width,podium.height);
         ctx.strokeStyle = "#2c1f17";
@@ -970,7 +989,6 @@ function start514Game(){
     function update(){
 
         ctx.clearRect(0,0,900,520);
-
         drawBackground();
 
         let newX = player.x;
@@ -1005,7 +1023,7 @@ function start514Game(){
         drawDesk(teacherDesk);
         desks.forEach(drawDesk);
 
-        // CỬA
+        // ===== CỬA =====
         ctx.fillStyle = "#3a2a22";
         ctx.fillRect(door.x,door.y,door.width,door.height);
         ctx.strokeStyle = "#000";
@@ -1031,7 +1049,7 @@ function start514Game(){
         document.body.style.justifyContent = "center";
         document.body.style.alignItems = "center";
         document.body.style.height = "100vh";
-        document.body.innerText = "cánh cửa ở góc phải đã mở.";
+        document.body.innerText = "cánh cửa cạnh bàn giáo viên đã mở.";
     }
 
     document.addEventListener("keydown", e => keys[e.code] = true);
