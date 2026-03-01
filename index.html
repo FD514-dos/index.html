@@ -845,12 +845,12 @@ function start514Game(){
 
     document.body.innerHTML = "";
     document.body.style.margin = "0";
-    document.body.style.background = "#e8cfa3";
+    document.body.style.background = "white";
     document.body.style.overflow = "hidden";
 
     const canvas = document.createElement("canvas");
     canvas.width = window.innerWidth;
-    canvas.height = 420;
+    canvas.height = 400;
     document.body.appendChild(canvas);
 
     const ctx = canvas.getContext("2d");
@@ -859,7 +859,7 @@ function start514Game(){
     let keys = {};
     let cameraX = 0;
 
-    const groundY = 340;
+    const groundY = 320;
 
     const player = {
         x: 50,
@@ -878,80 +878,54 @@ function start514Game(){
         desks.push({
             x: 200 + i*180,
             y: groundY - 35,
-            width: 70,
+            width: 80,
             height: 8
         });
     }
 
     const door = {
         x: desks[12].x + 200,
-        y: groundY - 100,
-        width: 50,
-        height: 100
+        y: groundY - 80,
+        width: 40,
+        height: 80
     };
 
     function drawBackground(){
 
-        // TƯỜNG
-        ctx.fillStyle = "#e8cfa3";
-        ctx.fillRect(0, 0, canvas.width, 260);
+        ctx.fillStyle = "black";
 
-        // SÀN GỖ
-        ctx.fillStyle = "#c28a55";
-        ctx.fillRect(0, 260, canvas.width, 160);
+        // bảng đen
+        ctx.fillRect(canvas.width/2 - 200, 60, 400, 100);
 
-        ctx.fillStyle = "#b07642";
-        for(let i=0;i<20;i++){
-            ctx.fillRect(0, 270 + i*8, canvas.width, 2);
-        }
+        // viền bảng
+        ctx.strokeRect(canvas.width/2 - 200, 60, 400, 100);
 
-        // BẢNG ĐEN
-        ctx.fillStyle = "#2f3e2f";
-        ctx.fillRect(canvas.width/2 - 250, 50, 500, 100);
-
-        ctx.strokeStyle = "#5a3d1e";
-        ctx.lineWidth = 4;
-        ctx.strokeRect(canvas.width/2 - 250, 50, 500, 100);
-
-        // ĐỒNG HỒ 12H
-        const clockX = canvas.width - 120;
-        const clockY = 90;
+        // đồng hồ
+        const clockX = canvas.width - 100;
+        const clockY = 100;
+        const radius = 30;
 
         ctx.beginPath();
-        ctx.arc(clockX, clockY, 25, 0, Math.PI*2);
-        ctx.fillStyle = "white";
-        ctx.fill();
-        ctx.strokeStyle = "black";
+        ctx.arc(clockX, clockY, radius, 0, Math.PI*2);
         ctx.stroke();
 
+        // kim giờ (12h)
         ctx.beginPath();
         ctx.moveTo(clockX, clockY);
         ctx.lineTo(clockX, clockY - 18);
         ctx.stroke();
 
+        // kim phút (12h)
         ctx.beginPath();
         ctx.moveTo(clockX, clockY);
-        ctx.lineTo(clockX, clockY - 22);
+        ctx.lineTo(clockX, clockY - 25);
         ctx.stroke();
-
-        // BÀN GIÁO VIÊN
-        ctx.fillStyle = "#8b5a2b";
-        ctx.fillRect(canvas.width/2 - 150, 180, 300, 50);
-
-        // MÁY TÍNH
-        ctx.fillStyle = "#333";
-        ctx.fillRect(canvas.width/2 - 20, 150, 40, 30);
     }
 
     function drawDesk(d){
-        const x = d.x - cameraX;
-
-        ctx.fillStyle = "#d9a066";
-        ctx.fillRect(x, d.y, d.width, d.height);
-
-        ctx.fillStyle = "#5a3d1e";
-        ctx.fillRect(x + 6, d.y + d.height, 6, 30);
-        ctx.fillRect(x + d.width - 12, d.y + d.height, 6, 30);
+        ctx.fillRect(d.x - cameraX, d.y, d.width, d.height);
+        ctx.fillRect(d.x - cameraX + 8, d.y + d.height, 6, 35);
+        ctx.fillRect(d.x - cameraX + d.width - 14, d.y + d.height, 6, 35);
     }
 
     function update(){
@@ -970,14 +944,12 @@ function start514Game(){
         player.y += player.dy;
         player.grounded = false;
 
-        // CHẠM ĐẤT
         if(player.y + player.height > groundY - 5){
             player.y = groundY - 5 - player.height;
             player.dy = 0;
             player.grounded = true;
         }
 
-        // CHẠM BÀN
         for(let desk of desks){
             if(
                 player.x < desk.x + desk.width &&
@@ -999,26 +971,18 @@ function start514Game(){
         cameraX = player.x - 150;
         if(cameraX < 0) cameraX = 0;
 
-        // SÀN
-        ctx.fillStyle = "#8b5a2b";
-        ctx.fillRect(-cameraX, groundY, canvas.width*4, 80);
+        ctx.fillStyle = "black";
+
+        ctx.fillRect(-cameraX, groundY, canvas.width*3, 80);
 
         for(let desk of desks){
             drawDesk(desk);
         }
 
-        // CỬA
-        ctx.fillStyle = "#6b3f1f";
         ctx.fillRect(door.x - cameraX, door.y, door.width, door.height);
 
-        ctx.fillStyle = "#222";
-        ctx.fillRect(door.x - cameraX + 15, door.y + 20, 20, 25);
-
-        // PLAYER
-        ctx.fillStyle = "black";
         ctx.fillRect(player.x - cameraX, player.y, player.width, player.height);
 
-        // WIN CHECK
         if(
             player.x < door.x + door.width &&
             player.x + player.width > door.x &&
