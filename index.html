@@ -71,6 +71,7 @@ let ai132012Memory = 0;
 let lastInput = "";
 let repeatCount = 0;
 let memoryPool = [];
+let nightInputCount = 0;
 /* =========================
    TIME CHECK (00:00 - 01:00 RED MODE)
 ========================= */
@@ -275,13 +276,71 @@ function containsNietz(t){
 function hasExactPassword(text){
     return text.split(/\s+/).includes("132012");
 }
-
+/* =========================
+   WANT TO GO HOME
+========================= */
+const homeKeywords = [
+    "want to go home",
+    "go home",
+    "i want to go home",
+    "về nhà",
+    "muốn về nhà",
+    "帰りたい",
+    "집에 가고 싶어",
+    "quiero ir a casa"
+];
 /* =========================
    MAIN FUNCTION
 ========================= */
-function reply(){
+function fadeToBlackAndEnter(){
 
-    const inputRaw = document.getElementById("userInput").value.trim();
+    document.body.style.transition = "1.5s";
+    document.body.style.background = "black";
+    document.body.style.color = "black";
+
+    setTimeout(()=>{
+        start514Game();
+    },1500);
+}
+function endGame(){
+
+    document.body.innerHTML = "";
+    document.body.style.background = "black";
+    document.body.style.color = "white";
+    document.body.style.display = "flex";
+    document.body.style.justifyContent = "center";
+    document.body.style.alignItems = "center";
+    document.body.style.height = "100vh";
+    document.body.style.fontSize = "22px";
+    document.body.style.transition = "2s";
+
+    setTimeout(()=>{
+        document.body.innerText = "bạn đã về nhà";
+    },1000);
+}
+    function reply(){
+
+ const inputRaw = document.getElementById("userInput").value;
+        const lower = inputRaw.toLowerCase();
+
+    // ===== WANT TO GO HOME ROUTE =====
+    for(let word of homeKeywords){
+        if(lower.includes(word)){
+            fadeToBlackAndEnter();
+            return;
+        }
+    }
+    const hour = new Date().getHours();
+const isNight = (hour >= 0 && hour < 3);
+
+if(isNight){
+    nightInputCount++;
+
+    if(nightInputCount === 3){
+        showExitChoice();
+        return;
+    }
+}
     if(inputRaw.length > 3){
     memoryPool.push(inputRaw);
     if(memoryPool.length > 5){
@@ -299,7 +358,7 @@ function reply(){
 
     lastInput = inputRaw;
 
-    if(repeatCount === 3){
+    if(repeatCount === ){
     responseDiv.style.color = "white";
     responseDiv.innerText =
     "If you repeat it three times, do you expect it to become true?";
@@ -311,7 +370,6 @@ function reply(){
         return;
     }
 
-    const lower = inputRaw.toLowerCase();
 if(futureMode){
     responseDiv.innerText = Math.random() < 0.5 ? "yes" : "no";
     return;
@@ -766,6 +824,32 @@ tái kiến.
 function true514(){
     const responseDiv = document.getElementById("response");
     responseDiv.innerText = "There is nothing behind this door.";
+}
+    function showExitChoice(){
+
+    const responseDiv = document.getElementById("response");
+
+    responseDiv.innerHTML = `
+        Exit?
+        <br><br>
+        <button onclick="enterGame()">Yes</button>
+        <button onclick="cancelExit()">No</button>
+    `;
+}
+
+function cancelExit(){
+    document.getElementById("response").innerText = "...";
+}
+
+function enterGame(){
+    start514Game();
+}
+    function start514Game(){
+    document.body.innerHTML = `
+        <div style="margin-top:40vh;font-size:22px;">
+            You are inside 514.
+        </div>
+    `;
 }
 </script>
 
