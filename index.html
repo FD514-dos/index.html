@@ -843,113 +843,146 @@ function cancelExit(){
 
 function start514Game(){
 
-    document.body.innerHTML = `
-        <canvas id="gameCanvas" width="320" height="200"></canvas>
-        <div style="text-align:center;color:white;margin-top:10px;">
-        ↑ ↓ ← → để di chuyển
-        </div>
-    `;
+    document.body.innerHTML = "";
+    document.body.style.margin = "0";
+    document.body.style.background = "white";
+    document.body.style.overflow = "hidden";
 
-    document.body.style.background = "black";
+    const canvas = document.createElement("canvas");
+    canvas.width = window.innerWidth;
+    canvas.height = 400;
+    document.body.appendChild(canvas);
 
-    const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
-    const tileSize = 20;
+    const gravity = 0.7;
+    let keys = {};
 
-    // 0 = floor
-    // 1 = wall
-    // 2 = desk
-    // 3 = door (ending)
+    const player = {
+        x: 50,
+        y: 200,
+        width: 15,
+        height: 15,
+        dx: 0,
+        dy: 0,
+        speed: 4,
+        jump: -13,
+        grounded: false
+    };
 
-    const map = [
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,3,1],
-        [1,0,2,0,2,0,2,0,2,0,2,0,2,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-    ];
+    // 13 bàn
+    const desks = [];
+    for(let i=0;i<13;i++){
+        desks.push({
+            x: 150 + i*180,
+            y: 260 - (i%3)*40,
+            width: 100,
+            height: 20
+        });
+    }
 
-    let player = { x:1, y:1 };
+    const ground = {
+        x: 0,
+        y: 320,
+        width: canvas.width,
+        height: 80
+    };
 
-    function draw(){
+    const door = {
+        x: desks[12].x + 200,
+        y: 240,
+        width: 40,
+        height: 80
+    };
+
+    function update(){
 
         ctx.clearRect(0,0,canvas.width,canvas.height);
 
-        for(let y=0;y<map.length;y++){
-            for(let x=0;x<map[y].length;x++){
+        // movement
+        player.dx = 0;
+        if(keys["ArrowLeft"]) player.dx = -player.speed;
+        if(keys["ArrowRight"]) player.dx = player.speed;
 
-                if(map[y][x] === 1){
-                    ctx.fillStyle = "#222"; // wall
-                }
-                else if(map[y][x] === 2){
-                    ctx.fillStyle = "#444"; // desk
-                }
-                else if(map[y][x] === 3){
-                    ctx.fillStyle = "#770000"; // door
-                }
-                else{
-                    ctx.fillStyle = "black"; // floor
-                }
+        player.x += player.dx;
 
-                ctx.fillRect(x*tileSize,y*tileSize,tileSize,tileSize);
+        // gravity
+        player.dy += gravity;
+        player.y += player.dy;
+        player.grounded = false;
+
+        // ground collision
+        if(player.y + player.height > ground.y){
+            player.y = ground.y - player.height;
+            player.dy = 0;
+            player.grounded = true;
+        }
+
+        // desk collision (platform logic)
+        for(let desk of desks){
+
+            // draw desk
+            ctx.fillStyle = "black";
+            ctx.fillRect(desk.x, desk.y, desk.width, desk.height);
+
+            // collision from top only
+            if(
+                player.x < desk.x + desk.width &&
+                player.x + player.width > desk.x &&
+                player.y + player.height > desk.y &&
+                player.y + player.height < desk.y + desk.height + 15 &&
+                player.dy >= 0
+            ){
+                player.y = desk.y - player.height;
+                player.dy = 0;
+                player.grounded = true;
             }
         }
 
-        // player
-        ctx.fillStyle = "white";
-        ctx.fillRect(player.x*tileSize,player.y*tileSize,tileSize,tileSize);
-    }
-
-    function move(dx,dy){
-
-        const newX = player.x + dx;
-        const newY = player.y + dy;
-
-      if(
-    map[newY] &&
-    map[newY][newX] !== undefined &&
-    map[newY][newX] !== 1 &&
-    map[newY][newX] !== 2
-){
-
-            player.x = newX;
-            player.y = newY;
-
-            if(map[newY][newX] === 3){
-                endGame();
-                return;
-            }
+        // jump
+        if((keys["Space"] || keys["ArrowUp"]) && player.grounded){
+            player.dy = player.jump;
         }
 
-        draw();
+        // draw ground
+        ctx.fillRect(ground.x, ground.y, ground.width, ground.height);
+
+        // draw player
+        ctx.fillStyle = "black";
+        ctx.fillRect(player.x, player.y, player.width, player.height);
+
+        // draw door
+        ctx.fillRect(door.x, door.y, door.width, door.height);
+
+        // win condition
+        if(
+            player.x < door.x + door.width &&
+            player.x + player.width > door.x &&
+            player.y < door.y + door.height &&
+            player.y + player.height > door.y
+        ){
+            winGame();
+            return;
+        }
+
+        requestAnimationFrame(update);
     }
 
-    function endGame(){
-
-        document.body.style.transition = "2s";
+    function winGame(){
+        document.body.innerHTML = "";
         document.body.style.background = "black";
-
-        setTimeout(()=>{
-            document.body.innerHTML = "";
-            document.body.style.display = "flex";
-            document.body.style.justifyContent = "center";
-            document.body.style.alignItems = "center";
-            document.body.style.height = "100vh";
-            document.body.style.color = "white";
-            document.body.style.fontSize = "24px";
-
-            document.body.innerText = "bạn đã về nhà";
-        },1000);
+        document.body.style.color = "white";
+        document.body.style.display = "flex";
+        document.body.style.justifyContent = "center";
+        document.body.style.alignItems = "center";
+        document.body.style.height = "100vh";
+        document.body.innerText = "bạn đã về nhà";
     }
-document.onkeydown = function(e){
-    if(e.key === "ArrowUp") move(0,-1);
-    if(e.key === "ArrowDown") move(0,1);
-    if(e.key === "ArrowLeft") move(-1,0);
-    if(e.key === "ArrowRight") move(1,0);
-};
 
-    draw();
+    document.addEventListener("keydown", e => keys[e.code] = true);
+    document.addEventListener("keyup", e => keys[e.code] = false);
+
+    update();
 }
 
 </script>
